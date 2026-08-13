@@ -1,10 +1,16 @@
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { productType, type Design, type ProductTypeId } from "@/lib/catalog";
 
 /**
  * Renders a design onto a blank product. The same artwork is reused across
  * every product type — only the blank, the placement and the scale change.
+ *
+ * `view` gives the gallery front / back / print-detail / lifestyle framings
+ * without needing separate photography.
  */
+
+export type MockupView = "front" | "back" | "detail" | "lifestyle";
 
 const SILHOUETTES: Record<ProductTypeId, string> = {
   tshirt:
@@ -32,10 +38,23 @@ interface Props {
   tone?: "light" | "dark" | undefined;
   className?: string | undefined;
   priority?: boolean | undefined;
+  view?: MockupView | undefined;
+  /** click-to-zoom on the print area */
+  zoomable?: boolean | undefined;
 }
 
-export function Mockup({ design, productId, colorValue, tone, className, priority }: Props) {
+export function Mockup({
+  design,
+  productId,
+  colorValue,
+  tone,
+  className,
+  priority,
+  view = "front",
+  zoomable,
+}: Props) {
   const type = productType(productId);
+  const [zoomed, setZoomed] = useState(false);
   const color = colorValue ?? type.colors[0]?.value ?? "#111111";
   const blankTone = tone ?? type.colors.find((c) => c.value === color)?.tone ?? "dark";
   const inkFilter =
@@ -43,7 +62,26 @@ export function Mockup({ design, productId, colorValue, tone, className, priorit
       ? "brightness(0) invert(1) opacity(0.92)"
       : "brightness(0) opacity(0.86)";
 
-  return (
+  const scale =
+    view === "back"
+      ? type.artScale * 0.34
+      : view === "detail"
+        ? type.artScale * 2.4
+        : view === "lifestyle"
+          ? 62
+          : type.artScale;
+  const top =
+    view === "back"
+      ? type.artTop * 0.7
+      : view === "detail"
+        ? type.artTop - type.artScale * 0.7
+        : view === "lifestyle"
+          ? 19
+          : type.artTop;
+
+  const zoom = zoomed ? 1.9 : 1;
+
+  const frame = (
     <div
       className={cn(
         "relative isolate w-full overflow-hidden bg-surface",
@@ -51,36 +89,60 @@ export function Mockup({ design, productId, colorValue, tone, className, priorit
         className,
       )}
     >
-      <svg
-        viewBox="0 0 100 100"
-        preserveAspectRatio="xMidYMid meet"
-        className="absolute inset-0 h-full w-full"
-        aria-hidden="true"
-      >
-        <defs>
-          <linearGradient id={`sheen-${productId}`} x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.14" />
-            <stop offset="55%" stopColor="#ffffff" stopOpacity="0" />
-            <stop offset="100%" stopColor="#000000" stopOpacity="0.18" />
-          </linearGradient>
-        </defs>
-        <path d={SILHOUETTES[productId]} fill={color} />
-        <path d={SILHOUETTES[productId]} fill={`url(#sheen-${productId})`} />
-      </svg>
+      {view !== "lifestyle" ? (
+        <svg
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
+          className="absolute inset-0 h-full w-full transition-transform duration-500 ease-[var(--ease-brand)]"
+          style={{ transform: `scale(${zoom})` }}
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id={`sheen-${productId}-${view}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.14" />
+              <stop offset="55%" stopColor="#ffffff" stopOpacity="0" />
+              <stop offset="100%" stopColor="#000000" stopOpacity="0.18" />
+            </linearGradient>
+          </defs>
+          <path d={SILHOUETTES[productId]} fill={color} />
+          <path d={SILHOUETTES[productId]} fill={`url(#sheen-${productId}-${view})`} />
+        </svg>
+      ) : (
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 bg-surface-2"
+          style={{ backgroundColor: color, opacity: 0.35 }}
+        />
+      )}
 
       <img
         src={design.art}
-        alt={`${design.name} on ${type.name}`}
+        alt={`${design.name} on ${type.name}${view === "front" ? "" : `, ${view} view`}`}
         width={1024}
         height={1024}
         loading={priority ? "eager" : "lazy"}
-        className="absolute left-1/2 -translate-x-1/2 object-contain transition-[width,top] duration-500"
+        className="absolute left-1/2 object-contain transition-[width,top,transform] duration-500 ease-[var(--ease-brand)]"
         style={{
-          width: `${type.artScale}%`,
-          top: `${type.artTop}%`,
+          width: `${scale}%`,
+          top: `${top}%`,
+          transform: `translateX(-50%) scale(${zoom})`,
           filter: inkFilter,
         }}
       />
     </div>
+  );
+
+  if (!zoomable) return frame;
+
+  return (
+    <button
+      type="button"
+      onClick={() => setZoomed((z) => !z)}
+      aria-pressed={zoomed}
+      aria-label={zoomed ? "Zoom out of the print" : "Zoom into the print"}
+      className="block w-full cursor-zoom-in focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    >
+      {frame}
+    </button>
   );
 }

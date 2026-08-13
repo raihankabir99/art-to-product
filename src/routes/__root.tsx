@@ -11,28 +11,41 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
-import { StoreProvider } from "@/components/store/store";
+import { Search } from "lucide-react";
+import { StoreProvider, useStore } from "@/components/store/store";
 import { Header } from "@/components/store/Header";
 import { Footer } from "@/components/store/Footer";
 import { CartDrawer } from "@/components/store/CartDrawer";
 import { SearchOverlay } from "@/components/store/SearchOverlay";
 import { Toaster } from "@/components/ui/sonner";
+import { CookieConsent } from "@/components/store/CookieConsent";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-[70vh] items-center justify-center px-4">
-      <div className="max-w-md text-center">
-        <p className="text-label text-gold">404</p>
-        <h1 className="text-h1 mt-4">This page has been unstitched</h1>
-        <p className="text-body mt-4 text-muted-foreground">
-          The page you're looking for doesn't exist or has moved.
+    <div className="flex min-h-[76vh] items-center justify-center px-5 py-20">
+      <div className="w-full max-w-xl text-center">
+        <p className="text-display leading-none opacity-15" aria-hidden="true">
+          404
         </p>
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
+        <p className="text-label -mt-4 text-gold">Page not found</p>
+        <h1 className="text-h1 mt-5">This page has been unstitched</h1>
+        <p className="text-body mt-4 text-muted-foreground">
+          The page you're looking for doesn't exist or has moved. Search the archive, or start again
+          from a design.
+        </p>
+        <NotFoundSearch />
+        <div className="mt-6 flex flex-wrap justify-center gap-3">
           <Link
             to="/designs"
             className="text-label inline-flex h-12 items-center border border-primary bg-primary px-7 text-primary-foreground"
           >
             Explore designs
+          </Link>
+          <Link
+            to="/shop"
+            className="text-label inline-flex h-12 items-center border border-border-strong px-7"
+          >
+            Shop all products
           </Link>
           <Link
             to="/"
@@ -43,6 +56,20 @@ function NotFoundComponent() {
         </div>
       </div>
     </div>
+  );
+}
+
+function NotFoundSearch() {
+  const { setSearchOpen } = useStore();
+  return (
+    <button
+      type="button"
+      onClick={() => setSearchOpen(true)}
+      className="text-body-sm mt-8 flex h-12 w-full items-center gap-3 border border-border px-4 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+    >
+      <Search className="size-4" aria-hidden="true" />
+      Search designs, products and collections
+    </button>
   );
 }
 
@@ -154,6 +181,7 @@ function RootComponent() {
         <Footer />
         <CartDrawer />
         <SearchOverlay />
+        <CookieConsent />
         <Toaster position="bottom-right" />
       </StoreProvider>
     </QueryClientProvider>
