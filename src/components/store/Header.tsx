@@ -160,59 +160,71 @@ export function Header() {
             </nav>
 
 
-          <Link
-            to="/"
-            className="justify-self-center text-center"
-            aria-label="Atelier Noir — home"
-          >
-            <span className="font-[family-name:var(--font-display)] text-[0.95rem] font-medium uppercase tracking-[0.42em] lg:text-base">
-              Atelier
-            </span>
-            <span className="block text-[0.5rem] uppercase tracking-[0.55em] text-gold">Noir</span>
-          </Link>
+            <Link
+              to="/"
+              className="justify-self-center text-center"
+              aria-label="Atelier Noir — home"
+            >
+              <span className="font-[family-name:var(--font-display)] text-[0.95rem] font-medium uppercase tracking-[0.42em] lg:text-base">
+                Atelier
+              </span>
+              <span className="block text-[0.5rem] uppercase tracking-[0.55em] text-gold">
+                Noir
+              </span>
+            </Link>
 
-          <div className="flex items-center justify-end gap-0.5">
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search"
-              className="inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
-            >
-              <Search className="size-[18px]" />
-            </button>
-            <Link
-              to="/wishlist"
-              aria-label={`Wishlist, ${wishlist.length} saved`}
-              className="relative hidden size-11 items-center justify-center transition-colors hover:text-gold sm:inline-flex"
-            >
-              <Heart className="size-[18px]" />
-              {wishlist.length > 0 ? (
-                <span className="absolute right-1.5 top-2 size-1.5 rounded-full bg-gold" />
-              ) : null}
-            </Link>
-            <Link
-              to="/account"
-              aria-label="Account"
-              className="hidden size-11 items-center justify-center transition-colors hover:text-gold lg:inline-flex"
-            >
-              <User className="size-[18px]" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setCartOpen(true)}
-              aria-label={`Cart, ${cartCount} items`}
-              className="relative inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
-            >
-              <ShoppingBag className="size-[18px]" />
-              {cartCount > 0 ? (
-                <span className="text-[10px] absolute -right-0.5 top-1.5 grid size-4 place-items-center rounded-full bg-gold font-medium text-background">
-                  {cartCount}
-                </span>
-              ) : null}
-            </button>
+            <div className="flex items-center justify-end gap-0.5">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                aria-label="Search"
+                className="inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
+              >
+                <Search className="size-[18px]" />
+              </button>
+              <Link
+                to="/wishlist"
+                aria-label={`Wishlist, ${wishlist.length} saved`}
+                className="relative hidden size-11 items-center justify-center transition-colors hover:text-gold sm:inline-flex"
+              >
+                <Heart className="size-[18px]" />
+                {wishlist.length > 0 ? (
+                  <span className="absolute right-1.5 top-2 size-1.5 rounded-full bg-gold" />
+                ) : null}
+              </Link>
+              <Link
+                to="/account"
+                aria-label="Account"
+                className="hidden size-11 items-center justify-center transition-colors hover:text-gold lg:inline-flex"
+              >
+                <User className="size-[18px]" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setCartOpen(true)}
+                aria-label={`Cart, ${cartCount} items`}
+                className="relative inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
+              >
+                <ShoppingBag className="size-[18px]" />
+                {cartCount > 0 ? (
+                  <span className="text-[10px] absolute -right-0.5 top-1.5 grid size-4 place-items-center rounded-full bg-gold font-medium text-background">
+                    {cartCount}
+                  </span>
+                ) : null}
+              </button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+
+        {mega ? (
+          <div className="fade-in-soft hidden border-b border-border bg-background lg:block">
+            {mega === "Shop" ? <ShopMenu /> : null}
+            {mega === "Designs" ? <DesignsMenu /> : null}
+            {mega === "Collections" ? <CollectionsMenu /> : null}
+          </div>
+        ) : null}
+      </div>
+
 
       {menuOpen ? (
         <div className="fade-in-soft fixed inset-0 top-16 z-40 overflow-y-auto bg-background lg:hidden">
