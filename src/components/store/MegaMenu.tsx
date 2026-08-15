@@ -65,7 +65,7 @@ export function ShopMenu() {
           params={{ slug: featured.slug }}
           className="mt-6 block border border-border bg-surface transition-colors hover:border-border-strong"
         >
-          <div className="aspect-[4/3]">
+          <div className="h-44 overflow-hidden">
             <Mockup design={featured} productId={featured.products[0] ?? "tshirt"} />
           </div>
           <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3 px-4 py-3">
@@ -112,7 +112,7 @@ export function DesignsMenu() {
           params={{ slug: spotlight.slug }}
           className="block border border-border bg-surface"
         >
-          <div className="aspect-[4/3]">
+          <div className="h-44 overflow-hidden">
             <Mockup design={spotlight} productId="tshirt" />
           </div>
         </Link>
