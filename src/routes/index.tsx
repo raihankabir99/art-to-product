@@ -6,7 +6,16 @@ import { DesignCard, ProductCard, CollectionCard } from "@/components/store/card
 import { Mockup } from "@/components/store/Mockup";
 import { SectionHeading } from "@/components/store/page";
 import { useStore } from "@/components/store/store";
-import { COLLECTIONS, DESIGNS, PRODUCT_TYPES, designBySlug, productType } from "@/lib/catalog";
+import { Newsletter } from "@/components/store/Newsletter";
+import {
+  ARTICLES,
+  COLLECTIONS,
+  DESIGNS,
+  PRODUCT_TYPES,
+  designBySlug,
+  productType,
+} from "@/lib/catalog";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
