@@ -336,7 +336,7 @@ function Home() {
             }
           />
           <div className="grid gap-x-6 gap-y-10 md:grid-cols-3">
-            {ARTICLES.slice(0, 3).map((a) => (
+            {ARTICLES.slice(0, 3).map((a, i) => (
               <article key={a.slug}>
                 <Link
                   to="/blog/$slug"
@@ -344,7 +344,7 @@ function Home() {
                   className="group block border border-border bg-surface"
                 >
                   <div className="aspect-[4/3]">
-                    <Mockup design={DESIGNS[1] ?? DESIGNS[0]!} productId="poster" />
+                    <Mockup design={DESIGNS[(i + 2) % DESIGNS.length]!} productId="poster" />
                   </div>
                 </Link>
                 <p className="text-label mt-5 text-gold">{a.category}</p>
