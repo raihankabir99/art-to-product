@@ -56,26 +56,28 @@ function Home() {
           aria-hidden="true"
         />
         <div className="container-page pb-14 pt-32 md:pb-20">
-          <p className="text-label reveal-up text-gold">Nocturne · Spring 2026</p>
-          <h1 className="text-display reveal-up mt-6 max-w-[15ch]">One design, many objects</h1>
-          <p className="text-body-lg reveal-up mt-8 max-w-lg text-foreground/70">
-            Start with the drawing. Choose the tee, the hoodie, the poster or the mug. Everything is
-            printed after you order it — nothing is made in advance.
+          <p className="text-label reveal-up text-gold">New collection · Nocturne 2026</p>
+          <h1 className="text-display reveal-up mt-6 max-w-[16ch]">
+            Wear the design. Live the idea.
+          </h1>
+          <p className="text-body-lg reveal-up mt-8 max-w-md text-foreground/70">
+            Original designs, made on demand.
           </p>
           <div className="reveal-up mt-10 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
-              <Link to="/designs">
-                Explore designs <ArrowRight className="size-4" />
+              <Link to="/new">
+                Shop new drops <ArrowRight className="size-4" />
               </Link>
             </Button>
             <Button asChild variant="secondary" size="lg">
-              <Link to="/shop">Shop all products</Link>
+              <Link to="/designs">Explore designs</Link>
             </Button>
           </div>
           <p className="text-meta mt-8">
             Delivery to {region.country} in {region.delivery} · {region.taxNote}
           </p>
         </div>
+
       </section>
 
       {/* MARQUEE */}
