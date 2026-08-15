@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import { useStore } from "./store";
 import { REGIONS, LANGUAGES, PRODUCT_TYPES, COLLECTIONS } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
+import { AnnouncementBar } from "./AnnouncementBar";
+import { ShopMenu, DesignsMenu, CollectionsMenu } from "./MegaMenu";
+
 
 const NAV = [
   { label: "Shop", to: "/shop" as const },
