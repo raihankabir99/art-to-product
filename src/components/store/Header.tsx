@@ -274,6 +274,23 @@ export function Header() {
               ))}
             </div>
 
+            <p className="text-label mt-10 text-muted-foreground">More</p>
+            <ul className="mt-4 divide-y divide-border border-y border-border">
+              {(
+                [
+                  { label: "About", to: "/about" },
+                  { label: "FAQ", to: "/faq" },
+                  { label: "Contact", to: "/contact" },
+                ] as const
+              ).map((l) => (
+                <li key={l.to}>
+                  <Link to={l.to} className="text-body flex min-h-12 items-center py-2">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
             <div className="mt-10 flex flex-col gap-3">
               <Button asChild variant="secondary" size="block">
                 <Link to="/account">Account</Link>
