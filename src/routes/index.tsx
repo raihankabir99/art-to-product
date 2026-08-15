@@ -6,7 +6,16 @@ import { DesignCard, ProductCard, CollectionCard } from "@/components/store/card
 import { Mockup } from "@/components/store/Mockup";
 import { SectionHeading } from "@/components/store/page";
 import { useStore } from "@/components/store/store";
-import { COLLECTIONS, DESIGNS, PRODUCT_TYPES, designBySlug, productType } from "@/lib/catalog";
+import { Newsletter } from "@/components/store/Newsletter";
+import {
+  ARTICLES,
+  COLLECTIONS,
+  DESIGNS,
+  PRODUCT_TYPES,
+  designBySlug,
+  productType,
+} from "@/lib/catalog";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -56,26 +65,28 @@ function Home() {
           aria-hidden="true"
         />
         <div className="container-page pb-14 pt-32 md:pb-20">
-          <p className="text-label reveal-up text-gold">Nocturne · Spring 2026</p>
-          <h1 className="text-display reveal-up mt-6 max-w-[15ch]">One design, many objects</h1>
-          <p className="text-body-lg reveal-up mt-8 max-w-lg text-foreground/70">
-            Start with the drawing. Choose the tee, the hoodie, the poster or the mug. Everything is
-            printed after you order it — nothing is made in advance.
+          <p className="text-label reveal-up text-gold">New collection · Nocturne 2026</p>
+          <h1 className="text-display reveal-up mt-6 max-w-[16ch]">
+            Wear the design. Live the idea.
+          </h1>
+          <p className="text-body-lg reveal-up mt-8 max-w-md text-foreground/70">
+            Original designs, made on demand.
           </p>
           <div className="reveal-up mt-10 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
-              <Link to="/designs">
-                Explore designs <ArrowRight className="size-4" />
+              <Link to="/new">
+                Shop new drops <ArrowRight className="size-4" />
               </Link>
             </Button>
             <Button asChild variant="secondary" size="lg">
-              <Link to="/shop">Shop all products</Link>
+              <Link to="/designs">Explore designs</Link>
             </Button>
           </div>
           <p className="text-meta mt-8">
             Delivery to {region.country} in {region.delivery} · {region.taxNote}
           </p>
         </div>
+
       </section>
 
       {/* MARQUEE */}
@@ -121,12 +132,12 @@ function Home() {
         </div>
       </section>
 
-      {/* DESIGNS */}
+      {/* FEATURED DESIGNS */}
       <section className="section border-t border-border">
         <div className="container-page">
           <SectionHeading
-            eyebrow="The archive"
-            title="Designs, not products"
+            eyebrow="Featured designs"
+            title="Designs made to live beyond the screen"
             action={
               <Button asChild variant="secondary" size="sm">
                 <Link to="/designs">All designs</Link>
@@ -134,12 +145,42 @@ function Home() {
             }
           />
           <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {DESIGNS.slice(0, 3).map((d) => (
+            {DESIGNS.slice(0, 6).map((d) => (
               <DesignCard key={d.slug} design={d} />
             ))}
           </div>
         </div>
       </section>
+
+      {/* NEW DROPS */}
+      <section className="section border-t border-border">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="New drops"
+            title="Fresh designs, made when you order"
+            action={
+              <Button asChild variant="secondary" size="sm">
+                <Link to="/new">See new drops</Link>
+              </Button>
+            }
+          />
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+            {(
+              [
+                ["nordic-silence", "tshirt"],
+                ["dune-crescent", "hoodie"],
+                ["paper-crane", "mug"],
+                ["midnight-lion", "phonecase"],
+              ] as const
+            )
+              .filter(([slug]) => designBySlug(slug))
+              .map(([slug, type]) => (
+                <ProductCard key={slug + type} design={designBySlug(slug)!} productId={type} />
+              ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* EDITORIAL SPLIT */}
       <section className="editorial section">
@@ -238,6 +279,101 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* TRUST */}
+      <section className="section-tight border-t border-border">
+        <div className="container-page grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            ["Made on demand", "Nothing is printed before you order it."],
+            ["Thoughtful design", "Original artwork from our studio and guests."],
+            ["International delivery", "Fulfilled close to you in the EU, UK, US and beyond."],
+            ["Secure checkout", "Encrypted payment with familiar methods."],
+            ["Customer support", "Answers from a real person within one working day."],
+          ].map(([t, d]) => (
+            <div key={t} className="bg-background p-6">
+              <h3 className="text-h4">{t}</h3>
+              <p className="text-body-sm mt-3 text-muted-foreground">{d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* REVIEWS */}
+      <section className="section border-t border-border">
+        <div className="container-page">
+          <SectionHeading eyebrow="Community" title="Loved by the community" />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["Elise M.", "France", "Beautiful print and the design looks exactly like the preview."],
+              ["Jonas B.", "Germany", "Heavy cotton, clean edges. It feels like a studio piece, not a print shop tee."],
+              ["Sara A.", "Saudi Arabia", "Arrived quickly and the packaging was quiet and considered."],
+              ["Tom H.", "United Kingdom", "I bought the same design on a tote and a poster. Both match perfectly."],
+            ].map(([name, place, quote]) => (
+              <figure key={name} className="border border-border p-6">
+                <p className="text-gold" aria-label="Rated 5 out of 5">
+                  ★★★★★
+                </p>
+                <blockquote className="text-body mt-4">“{quote}”</blockquote>
+                <figcaption className="text-meta mt-6">
+                  {name} · {place}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* JOURNAL */}
+      <section className="section border-t border-border">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="From the journal"
+            title="Notes on design and making"
+            action={
+              <Button asChild variant="secondary" size="sm">
+                <Link to="/blog">View all articles</Link>
+              </Button>
+            }
+          />
+          <div className="grid gap-x-6 gap-y-10 md:grid-cols-3">
+            {ARTICLES.slice(0, 3).map((a, i) => (
+              <article key={a.slug}>
+                <Link
+                  to="/blog/$slug"
+                  params={{ slug: a.slug }}
+                  className="group block border border-border bg-surface"
+                >
+                  <div className="aspect-[4/3]">
+                    <Mockup design={DESIGNS[(i + 2) % DESIGNS.length]!} productId="poster" />
+                  </div>
+                </Link>
+                <p className="text-label mt-5 text-gold">{a.category}</p>
+                <h3 className="text-h4 mt-3">
+                  <Link to="/blog/$slug" params={{ slug: a.slug }} className="link-underline">
+                    {a.title}
+                  </Link>
+                </h3>
+                <p className="text-body-sm mt-3 text-muted-foreground">{a.excerpt}</p>
+                <p className="text-meta mt-4">
+                  {a.date} · {a.readTime}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section className="section border-t border-border">
+        <div className="container-page">
+          <Newsletter
+            variant="panel"
+            title="Join the community"
+            body="Discover new designs, collections and special releases."
+          />
+        </div>
+      </section>
+
     </>
   );
 }

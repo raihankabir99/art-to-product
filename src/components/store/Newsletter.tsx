@@ -80,7 +80,11 @@ export function Newsletter({
             </Button>
           </form>
         )}
-        <p className="text-meta mt-4">Unsubscribe in one click. We never share your address.</p>
+        <p className="text-meta mt-4">
+          By subscribing you agree to receive updates from us. Unsubscribe in one click — we never
+          share your address.
+        </p>
+
       </div>
     </div>
   );

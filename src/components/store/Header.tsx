@@ -5,6 +5,9 @@ import { cn } from "@/lib/utils";
 import { useStore } from "./store";
 import { REGIONS, LANGUAGES, PRODUCT_TYPES, COLLECTIONS } from "@/lib/catalog";
 import { Button } from "@/components/ui/button";
+import { AnnouncementBar } from "./AnnouncementBar";
+import { ShopMenu, DesignsMenu, CollectionsMenu } from "./MegaMenu";
+
 
 const NAV = [
   { label: "Shop", to: "/shop" as const },
@@ -66,9 +69,12 @@ export function RegionSelector({ compact }: { compact?: boolean }) {
   );
 }
 
+const MEGA = ["Shop", "Designs", "Collections"] as const;
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mega, setMega] = useState<string | null>(null);
   const { cartCount, setCartOpen, setSearchOpen, wishlist } = useStore();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const overHero = pathname === "/";
@@ -82,7 +88,16 @@ export function Header() {
 
   useEffect(() => {
     setMenuOpen(false);
+    setMega(null);
   }, [pathname]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMega(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -91,10 +106,11 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const solid = scrolled || !overHero || menuOpen;
+  const solid = scrolled || !overHero || menuOpen || !!mega;
 
   return (
     <>
+      <AnnouncementBar />
       <div className="hidden border-b border-border bg-background lg:block">
         <div className="container-page flex h-10 items-center justify-between">
           <p className="text-label text-muted-foreground">
@@ -104,91 +120,114 @@ export function Header() {
         </div>
       </div>
 
-      <header
-        className={cn(
-          "sticky top-0 z-50 w-full transition-colors duration-500 ease-[var(--ease-brand)]",
-          solid ? "border-b border-border bg-background/92 backdrop-blur-xl" : "bg-transparent",
-        )}
-      >
-        <div className="container-page grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 lg:h-20">
-          <div className="flex items-center gap-1 lg:hidden">
-            <button
-              type="button"
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-expanded={menuOpen}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="inline-flex size-11 items-center justify-center"
-            >
-              {menuOpen ? <Menu className="size-5" /> : <Menu className="size-5" />}
-            </button>
-          </div>
-
-          <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="text-label link-underline text-foreground/80 transition-colors hover:text-foreground"
-                activeProps={{ "data-active": "true", className: "text-foreground" }}
+      <div onMouseLeave={() => setMega(null)} className="sticky top-0 z-50">
+        <header
+          className={cn(
+            "w-full transition-colors duration-500 ease-[var(--ease-brand)]",
+            solid ? "border-b border-border bg-background/92 backdrop-blur-xl" : "bg-transparent",
+          )}
+        >
+          <div className="container-page grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 lg:h-20">
+            <div className="flex items-center gap-1 lg:hidden">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-expanded={menuOpen}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                className="inline-flex size-11 items-center justify-center"
               >
-                {item.label}
+                {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              </button>
+            </div>
+
+            <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+              {NAV.map((item) => {
+                const hasMega = (MEGA as readonly string[]).includes(item.label);
+                return (
+                  <div
+                    key={item.to}
+                    onMouseEnter={() => setMega(hasMega ? item.label : null)}
+                    onFocus={() => setMega(hasMega ? item.label : null)}
+                  >
+                    <Link
+                      to={item.to}
+                      aria-expanded={hasMega ? mega === item.label : undefined}
+                      className="text-label link-underline text-foreground/80 transition-colors hover:text-foreground"
+                      activeProps={{ "data-active": "true", className: "text-foreground" }}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                );
+              })}
+            </nav>
+
+
+            <Link
+              to="/"
+              className="justify-self-center text-center"
+              aria-label="Atelier Noir — home"
+            >
+              <span className="font-[family-name:var(--font-display)] text-[0.95rem] font-medium uppercase tracking-[0.42em] lg:text-base">
+                Atelier
+              </span>
+              <span className="block text-[0.5rem] uppercase tracking-[0.55em] text-gold">
+                Noir
+              </span>
+            </Link>
+
+            <div className="flex items-center justify-end gap-0.5">
+              <button
+                type="button"
+                onClick={() => setSearchOpen(true)}
+                aria-label="Search"
+                className="inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
+              >
+                <Search className="size-[18px]" />
+              </button>
+              <Link
+                to="/wishlist"
+                aria-label={`Wishlist, ${wishlist.length} saved`}
+                className="relative hidden size-11 items-center justify-center transition-colors hover:text-gold sm:inline-flex"
+              >
+                <Heart className="size-[18px]" />
+                {wishlist.length > 0 ? (
+                  <span className="absolute right-1.5 top-2 size-1.5 rounded-full bg-gold" />
+                ) : null}
               </Link>
-            ))}
-          </nav>
-
-          <Link
-            to="/"
-            className="justify-self-center text-center"
-            aria-label="Atelier Noir — home"
-          >
-            <span className="font-[family-name:var(--font-display)] text-[0.95rem] font-medium uppercase tracking-[0.42em] lg:text-base">
-              Atelier
-            </span>
-            <span className="block text-[0.5rem] uppercase tracking-[0.55em] text-gold">Noir</span>
-          </Link>
-
-          <div className="flex items-center justify-end gap-0.5">
-            <button
-              type="button"
-              onClick={() => setSearchOpen(true)}
-              aria-label="Search"
-              className="inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
-            >
-              <Search className="size-[18px]" />
-            </button>
-            <Link
-              to="/wishlist"
-              aria-label={`Wishlist, ${wishlist.length} saved`}
-              className="relative hidden size-11 items-center justify-center transition-colors hover:text-gold sm:inline-flex"
-            >
-              <Heart className="size-[18px]" />
-              {wishlist.length > 0 ? (
-                <span className="absolute right-1.5 top-2 size-1.5 rounded-full bg-gold" />
-              ) : null}
-            </Link>
-            <Link
-              to="/account"
-              aria-label="Account"
-              className="hidden size-11 items-center justify-center transition-colors hover:text-gold lg:inline-flex"
-            >
-              <User className="size-[18px]" />
-            </Link>
-            <button
-              type="button"
-              onClick={() => setCartOpen(true)}
-              aria-label={`Cart, ${cartCount} items`}
-              className="relative inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
-            >
-              <ShoppingBag className="size-[18px]" />
-              {cartCount > 0 ? (
-                <span className="text-[10px] absolute -right-0.5 top-1.5 grid size-4 place-items-center rounded-full bg-gold font-medium text-background">
-                  {cartCount}
-                </span>
-              ) : null}
-            </button>
+              <Link
+                to="/account"
+                aria-label="Account"
+                className="hidden size-11 items-center justify-center transition-colors hover:text-gold lg:inline-flex"
+              >
+                <User className="size-[18px]" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setCartOpen(true)}
+                aria-label={`Cart, ${cartCount} items`}
+                className="relative inline-flex size-11 items-center justify-center transition-colors hover:text-gold"
+              >
+                <ShoppingBag className="size-[18px]" />
+                {cartCount > 0 ? (
+                  <span className="text-[10px] absolute -right-0.5 top-1.5 grid size-4 place-items-center rounded-full bg-gold font-medium text-background">
+                    {cartCount}
+                  </span>
+                ) : null}
+              </button>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
+
+        {mega ? (
+          <div className="fade-in-soft hidden border-b border-border bg-background lg:block">
+            {mega === "Shop" ? <ShopMenu /> : null}
+            {mega === "Designs" ? <DesignsMenu /> : null}
+            {mega === "Collections" ? <CollectionsMenu /> : null}
+          </div>
+        ) : null}
+      </div>
+
 
       {menuOpen ? (
         <div className="fade-in-soft fixed inset-0 top-16 z-40 overflow-y-auto bg-background lg:hidden">
@@ -234,6 +273,23 @@ export function Header() {
                 </Link>
               ))}
             </div>
+
+            <p className="text-label mt-10 text-muted-foreground">More</p>
+            <ul className="mt-4 divide-y divide-border border-y border-border">
+              {(
+                [
+                  { label: "About", to: "/about" },
+                  { label: "FAQ", to: "/faq" },
+                  { label: "Contact", to: "/contact" },
+                ] as const
+              ).map((l) => (
+                <li key={l.to}>
+                  <Link to={l.to} className="text-body flex min-h-12 items-center py-2">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
 
             <div className="mt-10 flex flex-col gap-3">
               <Button asChild variant="secondary" size="block">
