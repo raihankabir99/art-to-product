@@ -66,9 +66,12 @@ export function RegionSelector({ compact }: { compact?: boolean }) {
   );
 }
 
+const MEGA = ["Shop", "Designs", "Collections"] as const;
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mega, setMega] = useState<string | null>(null);
   const { cartCount, setCartOpen, setSearchOpen, wishlist } = useStore();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const overHero = pathname === "/";
@@ -82,7 +85,16 @@ export function Header() {
 
   useEffect(() => {
     setMenuOpen(false);
+    setMega(null);
   }, [pathname]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMega(null);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -91,10 +103,11 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const solid = scrolled || !overHero || menuOpen;
+  const solid = scrolled || !overHero || menuOpen || !!mega;
 
   return (
     <>
+      <AnnouncementBar />
       <div className="hidden border-b border-border bg-background lg:block">
         <div className="container-page flex h-10 items-center justify-between">
           <p className="text-label text-muted-foreground">
@@ -104,37 +117,48 @@ export function Header() {
         </div>
       </div>
 
-      <header
-        className={cn(
-          "sticky top-0 z-50 w-full transition-colors duration-500 ease-[var(--ease-brand)]",
-          solid ? "border-b border-border bg-background/92 backdrop-blur-xl" : "bg-transparent",
-        )}
-      >
-        <div className="container-page grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 lg:h-20">
-          <div className="flex items-center gap-1 lg:hidden">
-            <button
-              type="button"
-              onClick={() => setMenuOpen((v) => !v)}
-              aria-expanded={menuOpen}
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              className="inline-flex size-11 items-center justify-center"
-            >
-              {menuOpen ? <Menu className="size-5" /> : <Menu className="size-5" />}
-            </button>
-          </div>
-
-          <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
-            {NAV.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="text-label link-underline text-foreground/80 transition-colors hover:text-foreground"
-                activeProps={{ "data-active": "true", className: "text-foreground" }}
+      <div onMouseLeave={() => setMega(null)} className="sticky top-0 z-50">
+        <header
+          className={cn(
+            "w-full transition-colors duration-500 ease-[var(--ease-brand)]",
+            solid ? "border-b border-border bg-background/92 backdrop-blur-xl" : "bg-transparent",
+          )}
+        >
+          <div className="container-page grid h-16 grid-cols-[auto_1fr_auto] items-center gap-4 lg:h-20">
+            <div className="flex items-center gap-1 lg:hidden">
+              <button
+                type="button"
+                onClick={() => setMenuOpen((v) => !v)}
+                aria-expanded={menuOpen}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                className="inline-flex size-11 items-center justify-center"
               >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
+                {menuOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              </button>
+            </div>
+
+            <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
+              {NAV.map((item) => {
+                const hasMega = (MEGA as readonly string[]).includes(item.label);
+                return (
+                  <div
+                    key={item.to}
+                    onMouseEnter={() => setMega(hasMega ? item.label : null)}
+                    onFocus={() => setMega(hasMega ? item.label : null)}
+                  >
+                    <Link
+                      to={item.to}
+                      aria-expanded={hasMega ? mega === item.label : undefined}
+                      className="text-label link-underline text-foreground/80 transition-colors hover:text-foreground"
+                      activeProps={{ "data-active": "true", className: "text-foreground" }}
+                    >
+                      {item.label}
+                    </Link>
+                  </div>
+                );
+              })}
+            </nav>
+
 
           <Link
             to="/"
