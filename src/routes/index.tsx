@@ -123,12 +123,12 @@ function Home() {
         </div>
       </section>
 
-      {/* DESIGNS */}
+      {/* FEATURED DESIGNS */}
       <section className="section border-t border-border">
         <div className="container-page">
           <SectionHeading
-            eyebrow="The archive"
-            title="Designs, not products"
+            eyebrow="Featured designs"
+            title="Designs made to live beyond the screen"
             action={
               <Button asChild variant="secondary" size="sm">
                 <Link to="/designs">All designs</Link>
@@ -136,12 +136,42 @@ function Home() {
             }
           />
           <div className="grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
-            {DESIGNS.slice(0, 3).map((d) => (
+            {DESIGNS.slice(0, 6).map((d) => (
               <DesignCard key={d.slug} design={d} />
             ))}
           </div>
         </div>
       </section>
+
+      {/* NEW DROPS */}
+      <section className="section border-t border-border">
+        <div className="container-page">
+          <SectionHeading
+            eyebrow="New drops"
+            title="Fresh designs, made when you order"
+            action={
+              <Button asChild variant="secondary" size="sm">
+                <Link to="/new">See new drops</Link>
+              </Button>
+            }
+          />
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+            {(
+              [
+                ["nordic-silence", "tshirt"],
+                ["dune-crescent", "hoodie"],
+                ["paper-crane", "mug"],
+                ["midnight-lion", "phonecase"],
+              ] as const
+            )
+              .filter(([slug]) => designBySlug(slug))
+              .map(([slug, type]) => (
+                <ProductCard key={slug + type} design={designBySlug(slug)!} productId={type} />
+              ))}
+          </div>
+        </div>
+      </section>
+
 
       {/* EDITORIAL SPLIT */}
       <section className="editorial section">
