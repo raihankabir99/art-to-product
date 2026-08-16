@@ -459,6 +459,8 @@ export const DESIGNS: Design[] = [
     products: ALL,
     rating: 4.9,
     reviews: 412,
+    style: "Graphic",
+    edits: ["Best Sellers", "Street", "Gift"],
   },
   {
     slug: "solstice",
@@ -474,6 +476,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "sweatshirt", "tote", "mug", "poster", "cushion", "sticker"],
     rating: 4.8,
     reviews: 187,
+    style: "Minimal",
+    edits: ["New Drop", "Minimal", "Seasonal"],
   },
   {
     slug: "nordic-silence",
@@ -489,6 +493,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "sweatshirt", "tote", "cap", "notebook", "sticker", "poster"],
     rating: 4.7,
     reviews: 96,
+    style: "Typography",
+    edits: ["Minimal", "Art"],
   },
   {
     slug: "olive-line",
@@ -504,6 +510,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "sweatshirt", "tote", "mug", "cushion", "notebook", "kids-tee", "onesie"],
     rating: 4.9,
     reviews: 268,
+    style: "Illustration",
+    edits: ["Best Sellers", "Gift", "Seasonal"],
   },
   {
     slug: "dune-crescent",
@@ -519,6 +527,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "tote", "mug", "phonecase", "poster", "cushion", "cap"],
     rating: 4.6,
     reviews: 74,
+    style: "Artistic",
+    edits: ["New Drop", "Art"],
   },
   {
     slug: "paper-crane",
@@ -533,6 +543,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "sweatshirt", "tote", "poster", "sticker", "notebook", "mug"],
     rating: 4.8,
     reviews: 133,
+    style: "Lifestyle",
+    edits: ["Minimal", "Gift"],
   },
 ];
 
