@@ -644,3 +644,19 @@ export const REGIONS: Region[] = [
 ];
 
 export const LANGUAGES = ["English", "Deutsch", "Français", "Español", "Italiano", "العربية"];
+
+/* ---------------- Mock availability ---------------- */
+
+const hash = (s: string) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) % 9973;
+  return h;
+};
+
+/** Deterministic mock stock state so every card state can be previewed. */
+export const stockState = (designSlug: string, productId: ProductTypeId): "in" | "low" | "out" => {
+  const h = hash(`${designSlug}:${productId}`);
+  if (h % 17 === 0) return "out";
+  if (h % 7 === 0) return "low";
+  return "in";
+};
