@@ -5,12 +5,37 @@ import { useStore } from "./store";
 import { Mockup } from "./Mockup";
 import { ARTICLES, COLLECTIONS, DESIGNS, PRODUCT_TYPES, productType } from "@/lib/catalog";
 
-const RECENT = ["Midnight Lion", "Hoodie", "Poster"];
+const RECENT_KEY = "an-recent-searches";
+const RECENT_FALLBACK = ["Midnight Lion", "Hoodie", "Poster"];
 const POPULAR = ["New drops", "Tote bag", "Nocturne", "Kids", "Limited"];
 
 export function SearchOverlay() {
   const { searchOpen, setSearchOpen, format } = useStore();
   const [q, setQ] = useState("");
+  const [recent, setRecent] = useState<string[]>(RECENT_FALLBACK);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(RECENT_KEY);
+      if (raw) setRecent(JSON.parse(raw) as string[]);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const remember = (value: string) => {
+    const v = value.trim();
+    if (!v) return;
+    setRecent((prev) => {
+      const next = [v, ...prev.filter((r) => r.toLowerCase() !== v.toLowerCase())].slice(0, 6);
+      try {
+        localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -90,6 +115,9 @@ export function SearchOverlay() {
             ref={inputRef}
             value={q}
             onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") remember(q);
+            }}
             placeholder="Search designs, products, collections…"
             className="text-h2 w-full border-0 bg-transparent outline-none placeholder:text-muted-foreground/60"
           />
@@ -103,7 +131,7 @@ export function SearchOverlay() {
               <div>
                 <h2 className="text-label text-muted-foreground">Recent</h2>
                 <ul className="mt-4 space-y-2">
-                  {RECENT.map((r) => (
+                  {recent.map((r) => (
                     <li key={r}>
                       <button
                         type="button"
