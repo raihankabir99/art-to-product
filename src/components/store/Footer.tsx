@@ -131,7 +131,7 @@ export function Footer() {
               ) : null}
               <p className="text-meta mt-3 max-w-sm">
                 By subscribing you agree to our{" "}
-                <Link to="/legal/privacy" className="link-underline">
+                <Link to="/legal/$doc" params={{ doc: "privacy" }} className="link-underline">
                   privacy policy
                 </Link>
                 . Unsubscribe any time.
