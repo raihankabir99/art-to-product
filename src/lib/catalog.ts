@@ -271,7 +271,157 @@ export const PRODUCT_TYPES: ProductType[] = [
 export const productType = (id: ProductTypeId) =>
   (PRODUCT_TYPES.find((p) => p.id === id) ?? PRODUCT_TYPES[0]) as ProductType;
 
+/* ---------------- Shop category pages ---------------- */
+
+export interface ShopCategory {
+  /** url segment used by /shop/$category */
+  slug: string;
+  /** short label for the category tabs */
+  label: string;
+  /** editorial page title */
+  title: string;
+  intro: string;
+  /** product types shown on that page */
+  types: ProductTypeId[];
+}
+
+export const SHOP_CATEGORIES: ShopCategory[] = [
+  {
+    slug: "t-shirts",
+    label: "T-Shirts",
+    title: "T-Shirts",
+    intro:
+      "Designed for everyday expression. Graphic, minimal and artistic prints on heavyweight organic cotton tees.",
+    types: ["tshirt"],
+  },
+  {
+    slug: "hoodies",
+    label: "Hoodies",
+    title: "Hoodies",
+    intro: "Brushed-back fleece, double-lined hoods, and artwork placed with restraint.",
+    types: ["hoodie"],
+  },
+  {
+    slug: "sweatshirts",
+    label: "Sweatshirts",
+    title: "Sweatshirts",
+    intro: "Loopback cotton crewnecks cut slightly relaxed, printed one design at a time.",
+    types: ["sweatshirt"],
+  },
+  {
+    slug: "tote-bags",
+    label: "Tote Bags",
+    title: "Tote Bags",
+    intro: "Heavy canvas totes with a wide, flat print area — the design carried, not worn.",
+    types: ["tote"],
+  },
+  {
+    slug: "mugs",
+    label: "Mugs",
+    title: "Mugs",
+    intro: "Glazed stoneware with a matte finish. The quietest way to live with an artwork.",
+    types: ["mug"],
+  },
+  {
+    slug: "phone-cases",
+    label: "Phone Cases",
+    title: "Phone Cases",
+    intro: "Slim, impact-resistant cases with a scratch-resistant printed back.",
+    types: ["phonecase"],
+  },
+  {
+    slug: "caps",
+    label: "Caps",
+    title: "Caps",
+    intro: "Low-profile six-panel caps in brushed twill with a considered front mark.",
+    types: ["cap"],
+  },
+  {
+    slug: "posters",
+    label: "Posters / Wall Art",
+    title: "Posters & Wall Art",
+    intro: "Gallery-grade giclée prints on uncoated museum paper, with a generous margin.",
+    types: ["poster"],
+  },
+  {
+    slug: "stickers",
+    label: "Stickers",
+    title: "Stickers",
+    intro: "Die-cut weatherproof vinyl. The smallest edition we make.",
+    types: ["sticker"],
+  },
+  {
+    slug: "notebooks",
+    label: "Notebooks",
+    title: "Notebooks",
+    intro: "Hardcover, lay-flat, dotted paper — the design on the outside, the idea on the inside.",
+    types: ["notebook"],
+  },
+  {
+    slug: "cushions",
+    label: "Cushions",
+    title: "Cushions",
+    intro: "Woven cotton covers with a concealed zip. Artwork for the room, not the wall.",
+    types: ["cushion"],
+  },
+  {
+    slug: "kids",
+    label: "Kids T-Shirts",
+    title: "Kids T-Shirts",
+    intro: "Soft-washed organic cotton, sized for everyday play and every kind of mess.",
+    types: ["kids-tee"],
+  },
+  {
+    slug: "baby",
+    label: "Baby Onesies",
+    title: "Baby Onesies",
+    intro: "GOTS-certified cotton with envelope shoulders and nickel-free snaps.",
+    types: ["onesie"],
+  },
+];
+
+export const shopCategory = (slug: string) => SHOP_CATEGORIES.find((c) => c.slug === slug);
+
+export const categorySlugForType = (id: ProductTypeId) =>
+  SHOP_CATEGORIES.find((c) => c.types.includes(id))?.slug;
+
 export type Badge = "New" | "Bestseller" | "Limited" | "Sale";
+
+export type DesignStyle =
+  | "Minimal"
+  | "Typography"
+  | "Graphic"
+  | "Illustration"
+  | "Artistic"
+  | "Lifestyle";
+
+export const DESIGN_STYLES: DesignStyle[] = [
+  "Minimal",
+  "Typography",
+  "Graphic",
+  "Illustration",
+  "Artistic",
+  "Lifestyle",
+];
+
+/** Editorial edits used by the shop filters, independent of the collections. */
+export const EDITS = [
+  "New Drop",
+  "Best Sellers",
+  "Minimal",
+  "Street",
+  "Art",
+  "Seasonal",
+  "Gift",
+] as const;
+export type Edit = (typeof EDITS)[number];
+
+export const PRICE_BANDS = [
+  { id: "u20", label: "Under €20", min: 0, max: 20 },
+  { id: "20-30", label: "€20 – €30", min: 20, max: 30 },
+  { id: "30-50", label: "€30 – €50", min: 30, max: 50 },
+  { id: "50p", label: "€50+", min: 50, max: Infinity },
+];
 
 export interface Design {
   slug: string;
@@ -287,7 +437,10 @@ export interface Design {
   products: ProductTypeId[];
   rating: number;
   reviews: number;
+  style: DesignStyle;
+  edits: Edit[];
 }
+
 
 const ALL: ProductTypeId[] = PRODUCT_TYPES.map((p) => p.id);
 
@@ -306,6 +459,8 @@ export const DESIGNS: Design[] = [
     products: ALL,
     rating: 4.9,
     reviews: 412,
+    style: "Graphic",
+    edits: ["Best Sellers", "Street", "Gift"],
   },
   {
     slug: "solstice",
@@ -321,6 +476,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "sweatshirt", "tote", "mug", "poster", "cushion", "sticker"],
     rating: 4.8,
     reviews: 187,
+    style: "Minimal",
+    edits: ["New Drop", "Minimal", "Seasonal"],
   },
   {
     slug: "nordic-silence",
@@ -336,6 +493,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "sweatshirt", "tote", "cap", "notebook", "sticker", "poster"],
     rating: 4.7,
     reviews: 96,
+    style: "Typography",
+    edits: ["Minimal", "Art"],
   },
   {
     slug: "olive-line",
@@ -351,6 +510,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "sweatshirt", "tote", "mug", "cushion", "notebook", "kids-tee", "onesie"],
     rating: 4.9,
     reviews: 268,
+    style: "Illustration",
+    edits: ["Best Sellers", "Gift", "Seasonal"],
   },
   {
     slug: "dune-crescent",
@@ -366,6 +527,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "tote", "mug", "phonecase", "poster", "cushion", "cap"],
     rating: 4.6,
     reviews: 74,
+    style: "Artistic",
+    edits: ["New Drop", "Art"],
   },
   {
     slug: "paper-crane",
@@ -380,6 +543,8 @@ export const DESIGNS: Design[] = [
     products: ["tshirt", "hoodie", "sweatshirt", "tote", "poster", "sticker", "notebook", "mug"],
     rating: 4.8,
     reviews: 133,
+    style: "Lifestyle",
+    edits: ["Minimal", "Gift"],
   },
 ];
 
@@ -479,3 +644,19 @@ export const REGIONS: Region[] = [
 ];
 
 export const LANGUAGES = ["English", "Deutsch", "Français", "Español", "Italiano", "العربية"];
+
+/* ---------------- Mock availability ---------------- */
+
+const hash = (s: string) => {
+  let h = 0;
+  for (let i = 0; i < s.length; i += 1) h = (h * 31 + s.charCodeAt(i)) % 9973;
+  return h;
+};
+
+/** Deterministic mock stock state so every card state can be previewed. */
+export const stockState = (designSlug: string, productId: ProductTypeId): "in" | "low" | "out" => {
+  const h = hash(`${designSlug}:${productId}`);
+  if (h % 17 === 0) return "out";
+  if (h % 7 === 0) return "low";
+  return "in";
+};

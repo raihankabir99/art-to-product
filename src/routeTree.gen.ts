@@ -30,6 +30,8 @@ import { Route as CollectionsSlugRouteImport } from './routes/collections/$slug'
 import { Route as DesignsIndexRouteImport } from './routes/designs/index'
 import { Route as DesignsSlugRouteImport } from './routes/designs/$slug'
 import { Route as LegalDocRouteImport } from './routes/legal/$doc'
+import { Route as ShopIndexRouteImport } from './routes/shop.index'
+import { Route as ShopCategoryRouteImport } from './routes/shop.$category'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -136,6 +138,16 @@ const LegalDocRoute = LegalDocRouteImport.update({
   path: '/legal/$doc',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShopIndexRoute = ShopIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShopRoute,
+} as any)
+const ShopCategoryRoute = ShopCategoryRouteImport.update({
+  id: '/$category',
+  path: '/$category',
+  getParentRoute: () => ShopRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -150,15 +162,17 @@ export interface FileRoutesByFullPath {
   '/orders': typeof OrdersRoute
   '/returns': typeof ReturnsRoute
   '/shipping': typeof ShippingRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/wishlist': typeof WishlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/designs/$slug': typeof DesignsSlugRoute
   '/legal/$doc': typeof LegalDocRoute
+  '/shop/$category': typeof ShopCategoryRoute
   '/blog/': typeof BlogIndexRoute
   '/collections/': typeof CollectionsIndexRoute
   '/designs/': typeof DesignsIndexRoute
+  '/shop/': typeof ShopIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -173,15 +187,16 @@ export interface FileRoutesByTo {
   '/orders': typeof OrdersRoute
   '/returns': typeof ReturnsRoute
   '/shipping': typeof ShippingRoute
-  '/shop': typeof ShopRoute
   '/wishlist': typeof WishlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/designs/$slug': typeof DesignsSlugRoute
   '/legal/$doc': typeof LegalDocRoute
+  '/shop/$category': typeof ShopCategoryRoute
   '/blog': typeof BlogIndexRoute
   '/collections': typeof CollectionsIndexRoute
   '/designs': typeof DesignsIndexRoute
+  '/shop': typeof ShopIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -197,15 +212,17 @@ export interface FileRoutesById {
   '/orders': typeof OrdersRoute
   '/returns': typeof ReturnsRoute
   '/shipping': typeof ShippingRoute
-  '/shop': typeof ShopRoute
+  '/shop': typeof ShopRouteWithChildren
   '/wishlist': typeof WishlistRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/collections/$slug': typeof CollectionsSlugRoute
   '/designs/$slug': typeof DesignsSlugRoute
   '/legal/$doc': typeof LegalDocRoute
+  '/shop/$category': typeof ShopCategoryRoute
   '/blog/': typeof BlogIndexRoute
   '/collections/': typeof CollectionsIndexRoute
   '/designs/': typeof DesignsIndexRoute
+  '/shop/': typeof ShopIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -228,9 +245,11 @@ export interface FileRouteTypes {
     | '/collections/$slug'
     | '/designs/$slug'
     | '/legal/$doc'
+    | '/shop/$category'
     | '/blog/'
     | '/collections/'
     | '/designs/'
+    | '/shop/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -245,15 +264,16 @@ export interface FileRouteTypes {
     | '/orders'
     | '/returns'
     | '/shipping'
-    | '/shop'
     | '/wishlist'
     | '/blog/$slug'
     | '/collections/$slug'
     | '/designs/$slug'
     | '/legal/$doc'
+    | '/shop/$category'
     | '/blog'
     | '/collections'
     | '/designs'
+    | '/shop'
   id:
     | '__root__'
     | '/'
@@ -274,9 +294,11 @@ export interface FileRouteTypes {
     | '/collections/$slug'
     | '/designs/$slug'
     | '/legal/$doc'
+    | '/shop/$category'
     | '/blog/'
     | '/collections/'
     | '/designs/'
+    | '/shop/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -292,7 +314,7 @@ export interface RootRouteChildren {
   OrdersRoute: typeof OrdersRoute
   ReturnsRoute: typeof ReturnsRoute
   ShippingRoute: typeof ShippingRoute
-  ShopRoute: typeof ShopRoute
+  ShopRoute: typeof ShopRouteWithChildren
   WishlistRoute: typeof WishlistRoute
   BlogSlugRoute: typeof BlogSlugRoute
   CollectionsSlugRoute: typeof CollectionsSlugRoute
@@ -452,8 +474,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LegalDocRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/shop/': {
+      id: '/shop/'
+      path: '/'
+      fullPath: '/shop/'
+      preLoaderRoute: typeof ShopIndexRouteImport
+      parentRoute: typeof ShopRoute
+    }
+    '/shop/$category': {
+      id: '/shop/$category'
+      path: '/$category'
+      fullPath: '/shop/$category'
+      preLoaderRoute: typeof ShopCategoryRouteImport
+      parentRoute: typeof ShopRoute
+    }
   }
 }
+
+interface ShopRouteChildren {
+  ShopCategoryRoute: typeof ShopCategoryRoute
+  ShopIndexRoute: typeof ShopIndexRoute
+}
+
+const ShopRouteChildren: ShopRouteChildren = {
+  ShopCategoryRoute: ShopCategoryRoute,
+  ShopIndexRoute: ShopIndexRoute,
+}
+
+const ShopRouteWithChildren = ShopRoute._addFileChildren(ShopRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -468,7 +516,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersRoute: OrdersRoute,
   ReturnsRoute: ReturnsRoute,
   ShippingRoute: ShippingRoute,
-  ShopRoute: ShopRoute,
+  ShopRoute: ShopRouteWithChildren,
   WishlistRoute: WishlistRoute,
   BlogSlugRoute: BlogSlugRoute,
   CollectionsSlugRoute: CollectionsSlugRoute,
