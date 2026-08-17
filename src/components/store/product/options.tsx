@@ -71,7 +71,15 @@ export function ProductRating({
 
 /* ---------------- Option primitives ---------------- */
 
-function OptionHeader({ label, value, action }: { label: string; value?: string; action?: React.ReactNode }) {
+function OptionHeader({
+  label,
+  value,
+  action,
+}: {
+  label: string;
+  value?: string | undefined;
+  action?: React.ReactNode | undefined;
+}) {
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-4">
       <p className="text-label min-w-0 text-muted-foreground">
