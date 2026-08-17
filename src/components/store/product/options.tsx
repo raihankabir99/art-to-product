@@ -19,7 +19,7 @@ import type { ProductType } from "@/lib/catalog";
 
 /* ---------------- Price + rating ---------------- */
 
-export function ProductPrice({ value, compareAt }: { value: number; compareAt?: number }) {
+export function ProductPrice({ value, compareAt }: { value: number; compareAt?: number | undefined }) {
   const { format } = useStore();
   return (
     <p className="text-price flex flex-wrap items-baseline gap-3">
@@ -41,7 +41,7 @@ export function ProductRating({
 }: {
   rating: number;
   reviews: number;
-  onJump?: () => void;
+  onJump?: (() => void) | undefined;
 }) {
   return (
     <div className="flex flex-wrap items-center gap-3">
@@ -144,10 +144,10 @@ export function SizeSelector({
 }: {
   type: ProductType;
   sizes: string[];
-  value?: string;
+  value?: string | undefined;
   onChange: (s: string) => void;
-  onGuide?: () => void;
-  label?: string;
+  onGuide?: (() => void) | undefined;
+  label?: string | undefined;
 }) {
   return (
     <fieldset>
@@ -199,7 +199,7 @@ export function DeviceSelector({
   value,
   onChange,
 }: {
-  value?: string;
+  value?: string | undefined;
   onChange: (m: string) => void;
 }) {
   const [brand, setBrand] = useState(
@@ -286,7 +286,7 @@ export function PosterSizeSelector({
   value,
   onChange,
 }: {
-  value?: string;
+  value?: string | undefined;
   onChange: (s: string) => void;
 }) {
   return (
@@ -330,7 +330,7 @@ export function FormatSelector({
   onChange,
 }: {
   type: ProductType;
-  value?: string;
+  value?: string | undefined;
   onChange: (v: string) => void;
 }) {
   const options = FORMAT_OPTIONS[type.id] ?? [];
