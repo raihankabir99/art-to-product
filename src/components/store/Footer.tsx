@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { ArrowUp, Instagram, Music2, Facebook, Leaf, Truck, RotateCcw, ShieldCheck } from "lucide-react";
+import { ArrowUp, Instagram, Music2, Facebook, Youtube, Leaf, Truck, RotateCcw, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RegionSelector } from "./Header";
 
@@ -56,6 +56,7 @@ const SOCIAL = [
   { label: "TikTok", Icon: Music2 },
   { label: "Pinterest", Icon: Leaf },
   { label: "Facebook", Icon: Facebook },
+  { label: "YouTube", Icon: Youtube },
 ];
 
 const PROMISES = [
