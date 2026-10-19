@@ -104,7 +104,7 @@ function OrderConfirmationPage() {
               Order <strong className="text-foreground font-mono">{orderNumber}</strong>
             </span>
             <span className="text-muted-foreground select-none">·</span>
-            <span className="text-muted-foreground">
+            <span className="text-muted-foreground" suppressHydrationWarning>
               {new Date().toLocaleDateString("en-GB", {
                 day: "numeric",
                 month: "long",

@@ -108,11 +108,14 @@ export function DashboardOverview({ onNavigate, onOpenModal }: DashboardOverview
               Production Gateway • Atelier Noir Enterprise
             </p>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-display font-medium text-foreground tracking-tight mt-1">
+          <h1
+            className="text-2xl sm:text-3xl font-display font-medium text-foreground tracking-tight mt-1"
+            suppressHydrationWarning
+          >
             {greeting}, Director
           </h1>
           <p className="text-xs text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
-            <span>{currentDateFormatted}</span>
+            <span suppressHydrationWarning>{currentDateFormatted}</span>
             <span className="hidden sm:inline">•</span>
             <span className="text-emerald-400 flex items-center gap-1">
               <ShieldCheck className="size-3.5" /> All 4 POD nodes operational (99.98% sync rate)
