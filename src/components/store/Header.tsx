@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { AnnouncementBar } from "./AnnouncementBar";
 import { ShopMenu, DesignsMenu, CollectionsMenu } from "./MegaMenu";
 
-
 const NAV = [
   { label: "Shop", to: "/shop" as const },
   { label: "Designs", to: "/designs" as const },
@@ -162,7 +161,6 @@ export function Header() {
               })}
             </nav>
 
-
             <Link
               to="/"
               className="justify-self-center text-center"
@@ -227,7 +225,6 @@ export function Header() {
           </div>
         ) : null}
       </div>
-
 
       {menuOpen ? (
         <div className="fade-in-soft fixed inset-0 top-16 z-40 overflow-y-auto bg-background lg:hidden">

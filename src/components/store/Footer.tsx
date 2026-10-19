@@ -1,7 +1,17 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { ArrowUp, Instagram, Music2, Facebook, Youtube, Leaf, Truck, RotateCcw, ShieldCheck } from "lucide-react";
+import {
+  ArrowUp,
+  Instagram,
+  Music2,
+  Facebook,
+  Leaf,
+  Truck,
+  RotateCcw,
+  ShieldCheck,
+  Youtube,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { RegionSelector } from "./Header";
 
@@ -13,9 +23,6 @@ const COLUMNS: { title: string; links: { label: string; to: string }[] }[] = [
       { label: "T-Shirts", to: "/shop" },
       { label: "Hoodies", to: "/shop" },
       { label: "Sweatshirts", to: "/shop" },
-      { label: "Tote Bags", to: "/shop" },
-      { label: "Mugs", to: "/shop" },
-      { label: "Phone Cases", to: "/shop" },
       { label: "Accessories", to: "/shop" },
     ],
   },
@@ -27,7 +34,6 @@ const COLUMNS: { title: string; links: { label: string; to: string }[] }[] = [
       { label: "New Drops", to: "/new" },
       { label: "Best Sellers", to: "/best-sellers" },
       { label: "Journal", to: "/blog" },
-      { label: "About", to: "/about" },
     ],
   },
   {
@@ -36,17 +42,25 @@ const COLUMNS: { title: string; links: { label: string; to: string }[] }[] = [
       { label: "FAQ", to: "/faq" },
       { label: "Shipping", to: "/shipping" },
       { label: "Returns", to: "/returns" },
-      { label: "Order Tracking", to: "/orders" },
+      { label: "Order Tracking", to: "/track-order" },
       { label: "Contact", to: "/contact" },
+    ],
+  },
+  {
+    title: "About",
+    links: [
+      { label: "Our Story", to: "/about" },
+      { label: "Design Philosophy", to: "/about" },
+      { label: "Enterprise CMS", to: "/admin" },
     ],
   },
   {
     title: "Legal",
     links: [
       { label: "Privacy Policy", to: "/legal/privacy" },
-      { label: "Terms", to: "/legal/terms" },
+      { label: "Terms & Conditions", to: "/legal/terms" },
       { label: "Cookie Policy", to: "/legal/cookies" },
-      { label: "Refund Policy", to: "/legal/refunds" },
+      { label: "Legal Center", to: "/legal" },
     ],
   },
 ];
@@ -60,13 +74,38 @@ const SOCIAL = [
 ];
 
 const PROMISES = [
-  { Icon: Truck, title: "Worldwide delivery", body: "Printed in the EU, UK and US — shipped from the studio closest to you." },
-  { Icon: RotateCcw, title: "30-day returns", body: "Wrong size or changed your mind? Send it back within 30 days." },
-  { Icon: ShieldCheck, title: "Secure checkout", body: "Encrypted payments, no card details ever stored on our side." },
-  { Icon: Leaf, title: "Made on demand", body: "Nothing is printed until you order it. No dead stock, less waste." },
+  {
+    Icon: Truck,
+    title: "Worldwide delivery",
+    body: "Printed in the EU, UK and US — shipped from the studio closest to you.",
+  },
+  {
+    Icon: RotateCcw,
+    title: "30-day returns",
+    body: "Wrong size or changed your mind? Send it back within 30 days.",
+  },
+  {
+    Icon: ShieldCheck,
+    title: "Secure checkout",
+    body: "Encrypted payments, no card details ever stored on our side.",
+  },
+  {
+    Icon: Leaf,
+    title: "Made on demand",
+    body: "Nothing is printed until you order it. No dead stock, less waste.",
+  },
 ];
 
-const PAYMENTS = ["Visa", "Mastercard", "Amex", "PayPal", "Apple Pay", "Google Pay", "Klarna", "iDEAL"];
+const PAYMENTS = [
+  "Visa",
+  "Mastercard",
+  "Amex",
+  "PayPal",
+  "Apple Pay",
+  "Google Pay",
+  "Klarna",
+  "iDEAL",
+];
 
 export function Footer() {
   const [email, setEmail] = useState("");
@@ -140,7 +179,7 @@ export function Footer() {
             </form>
           </div>
 
-          <div className="grid grid-cols-2 gap-10 sm:grid-cols-4">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-5">
             {COLUMNS.map((col) => (
               <nav key={col.title} aria-label={col.title}>
                 <h3 className="text-label text-muted-foreground">{col.title}</h3>

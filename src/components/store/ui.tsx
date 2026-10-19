@@ -150,13 +150,21 @@ export function Notice({
       role={tone === "error" ? "alert" : "status"}
       className={cn(
         "flex gap-3 border p-4",
-        tone === "error" ? "border-destructive/60" : tone === "success" ? "border-gold/50" : "border-border",
+        tone === "error"
+          ? "border-destructive/60"
+          : tone === "success"
+            ? "border-gold/50"
+            : "border-border",
       )}
     >
       <Icon
         className={cn(
           "mt-0.5 size-4 shrink-0",
-          tone === "error" ? "text-destructive" : tone === "success" ? "text-gold" : "text-muted-foreground",
+          tone === "error"
+            ? "text-destructive"
+            : tone === "success"
+              ? "text-gold"
+              : "text-muted-foreground",
         )}
         aria-hidden="true"
       />
@@ -273,7 +281,11 @@ export function Timeline({
                   !done && !active && "border-border text-muted-foreground",
                 )}
               >
-                {done ? <Check className="size-3.5" /> : <span className="text-label">{i + 1}</span>}
+                {done ? (
+                  <Check className="size-3.5" />
+                ) : (
+                  <span className="text-label">{i + 1}</span>
+                )}
               </span>
               {i < steps.length - 1 ? (
                 <span
@@ -366,7 +378,10 @@ export function BarChart({
       <figcaption className="sr-only">{label}</figcaption>
       <ul className="space-y-3">
         {data.map((d) => (
-          <li key={d.label} className="grid grid-cols-[7rem_minmax(0,1fr)_3.5rem] items-center gap-3">
+          <li
+            key={d.label}
+            className="grid grid-cols-[7rem_minmax(0,1fr)_3.5rem] items-center gap-3"
+          >
             <span className="text-meta truncate">{d.label}</span>
             <span className="h-2 w-full bg-surface-2" aria-hidden="true">
               <span

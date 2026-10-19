@@ -18,6 +18,7 @@ import { SizeGuide } from "@/components/store/SizeGuide";
 import { Notice } from "@/components/store/ui";
 import { useStore } from "@/components/store/store";
 import { DESIGNS, designBySlug, productType, type ProductTypeId } from "@/lib/catalog";
+import { getStaticProductShot } from "@/lib/product-data";
 
 export const Route = createFileRoute("/designs/$slug")({
   validateSearch: (search: Record<string, unknown>): { product?: ProductTypeId } => {
@@ -32,7 +33,10 @@ export const Route = createFileRoute("/designs/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Design unavailable — Atelier Noir" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Design unavailable — Atelier Noir" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const d = loaderData.design;
@@ -93,15 +97,17 @@ function DesignDetail() {
   const { product } = Route.useSearch();
   const { addToCart, format, region, markViewed } = useStore();
 
-  const [productId, setProductId] = useState<ProductTypeId>(
-    product && design.products.includes(product) ? product : design.products[0]!,
-  );
+  const initialProductId =
+    product && design.products.includes(product) ? product : design.products[0]!;
+  const [productId, setProductId] = useState<ProductTypeId>(initialProductId);
   const type = productType(productId);
   const [colorName, setColorName] = useState(type.colors[0]!.name);
   const [size, setSize] = useState(type.sizes?.[2] ?? type.sizes?.[0]);
   const [qty, setQty] = useState(1);
   const [adding, setAdding] = useState(false);
-  const [view, setView] = useState<MockupView>("front");
+  const [view, setView] = useState<MockupView>(() =>
+    getStaticProductShot(design.slug, initialProductId) ? "lifestyle" : "front",
+  );
   const [guideOpen, setGuideOpen] = useState(false);
   const [sizeError, setSizeError] = useState<string | null>(null);
 
@@ -122,7 +128,7 @@ function DesignDetail() {
     setProductId(next);
     setColorName(nextType.colors[0]!.name);
     setSize(nextType.sizes?.[2] ?? nextType.sizes?.[0]);
-    setView("front");
+    setView(getStaticProductShot(design.slug, next) ? "lifestyle" : "front");
     setSizeError(null);
   }
 
@@ -163,20 +169,35 @@ function DesignDetail() {
         {/* GALLERY */}
         <div>
           <div className="relative border border-border">
-            <Mockup
-              key={productId + color.name + view}
-              design={design}
-              productId={productId}
-              colorValue={color.value}
-              tone={color.tone}
-              view={view}
-              priority
-              zoomable
-              className="fade-in-soft"
-            />
+            {view === "lifestyle" && getStaticProductShot(design.slug, productId) ? (
+              <div className="aspect-square w-full overflow-hidden bg-surface">
+                <img
+                  src={getStaticProductShot(design.slug, productId)}
+                  alt={`${design.name} ${type.name} - In context`}
+                  width={1024}
+                  height={1024}
+                  className="size-full object-cover object-center fade-in-soft"
+                />
+              </div>
+            ) : (
+              <Mockup
+                key={productId + color.name + view}
+                design={design}
+                productId={productId}
+                colorValue={color.value}
+                tone={color.tone}
+                view={view}
+                priority
+                zoomable
+                className="fade-in-soft"
+              />
+            )}
             <div className="pointer-events-none absolute left-4 top-4 flex flex-wrap gap-2">
               {design.badges.map((b) => (
-                <Badge key={b} variant={b === "Sale" ? "sale" : b === "Limited" ? "gold" : "default"}>
+                <Badge
+                  key={b}
+                  variant={b === "Sale" ? "sale" : b === "Limited" ? "gold" : "default"}
+                >
                   {b}
                 </Badge>
               ))}
@@ -219,7 +240,9 @@ function DesignDetail() {
                 aria-label={`View ${c.name}`}
                 aria-pressed={c.name === color.name}
                 className={`border transition-colors ${
-                  c.name === color.name ? "border-foreground" : "border-border hover:border-border-strong"
+                  c.name === color.name
+                    ? "border-foreground"
+                    : "border-border hover:border-border-strong"
                 }`}
               >
                 <Mockup design={design} productId={productId} colorValue={c.value} tone={c.tone} />
@@ -230,17 +253,50 @@ function DesignDetail() {
 
         {/* BUY PANEL */}
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="text-label text-gold">{design.collection}</p>
-          <h1 className="text-h1 mt-4">{design.name}</h1>
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-label text-gold">{design.collection} Collection</p>
+            <Badge variant="outline" className="border-gold/40 text-gold">
+              Available on {design.products.length} Products
+            </Badge>
+          </div>
+          <h1 className="text-h1 mt-3">{design.name}</h1>
+          <p className="text-body-sm text-gold mt-1">One design. Many ways to express it.</p>
           <p className="text-body mt-4 max-w-prose text-muted-foreground">{design.story}</p>
 
           <div className="mt-6 flex flex-wrap items-center gap-4">
-            <Price value={type.price} compareAt={type.compareAt} className="text-lg" />
+            <Price value={type.price} compareAt={type.compareAt} className="text-lg font-medium" />
             <span className="text-meta">{region.taxNote}</span>
-            <a href="#reviews" className="text-meta link-underline inline-flex items-center gap-1.5">
+            <a
+              href="#reviews"
+              className="text-meta link-underline inline-flex items-center gap-1.5"
+            >
               <Star className="size-3.5 text-gold" fill="currentColor" aria-hidden="true" />
               {design.rating} · {design.reviews} reviews
             </a>
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Button
+              onClick={() => {
+                const el = document.getElementById("shop-this-design-grid");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              variant="outline"
+              size="sm"
+              className="border-gold text-gold hover:bg-gold hover:text-gold-foreground"
+            >
+              Shop This Design ↓
+            </Button>
+            <Button
+              onClick={() => {
+                const el = document.getElementById("shop-this-design-grid");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+              }}
+              variant="ghost"
+              size="sm"
+            >
+              View All {design.products.length} Products
+            </Button>
           </div>
 
           <p
@@ -309,7 +365,9 @@ function DesignDetail() {
                   aria-pressed={c.name === color.name}
                   aria-label={c.name}
                   className={`grid size-11 place-items-center border transition-colors ${
-                    c.name === color.name ? "border-foreground" : "border-border hover:border-border-strong"
+                    c.name === color.name
+                      ? "border-foreground"
+                      : "border-border hover:border-border-strong"
                   }`}
                 >
                   <span
@@ -434,8 +492,8 @@ function DesignDetail() {
             <AccordionItem value="care">
               <AccordionTrigger className="text-label">Care instructions</AccordionTrigger>
               <AccordionContent className="text-body text-muted-foreground">
-                Wash cold inside out, hang dry, do not tumble dry, do not iron directly on the print.
-                Hard goods are wiped clean; stoneware is dishwasher safe.
+                Wash cold inside out, hang dry, do not tumble dry, do not iron directly on the
+                print. Hard goods are wiped clean; stoneware is dishwasher safe.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="shipping">
@@ -456,21 +514,29 @@ function DesignDetail() {
         </div>
       </section>
 
-      {/* ONE DESIGN. MANY EXPRESSIONS. */}
-      <section className="editorial section">
+      {/* ONE DESIGN. MANY EXPRESSIONS / SHOP THIS DESIGN */}
+      <section
+        id="shop-this-design-grid"
+        className="editorial section scroll-mt-24 border-t border-border pt-16"
+      >
         <div className="container-page">
           <div className="grid gap-6 pb-10 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
             <div>
-              <p className="text-label text-gold">One design. Many expressions.</p>
-              <h2 className="text-h2 mt-3">{design.name}, on {design.products.length} objects</h2>
+              <p className="text-label text-gold">
+                SHOP THIS DESIGN — ONE DESIGN, MANY EXPRESSIONS
+              </p>
+              <h2 className="text-h2 mt-3">
+                {design.name}, available on {design.products.length} products
+              </h2>
               <p className="text-body mt-4 max-w-xl text-muted-foreground">
-                The same artwork, proofed for every surface. Choose an object to load it into the
-                configurator above — the price, colourways and sizes update with it.
+                Select any product option below to load it into the configurator above. Each card
+                shows starting price, available colourways and format options.
               </p>
             </div>
-            <p className="text-label text-muted-foreground">
-              Currently configuring · {type.name}
-            </p>
+            <div className="flex items-center gap-3">
+              <span className="text-label text-gold">Currently configured:</span>
+              <Badge variant="default">{type.name}</Badge>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-px border border-border bg-border md:grid-cols-3 lg:grid-cols-5">
@@ -521,7 +587,10 @@ function DesignDetail() {
               {[5, 4, 3, 2, 1].map((s, i) => {
                 const pct = [78, 15, 4, 2, 1][i]!;
                 return (
-                  <li key={s} className="grid grid-cols-[2rem_minmax(0,1fr)_2.5rem] items-center gap-3">
+                  <li
+                    key={s}
+                    className="grid grid-cols-[2rem_minmax(0,1fr)_2.5rem] items-center gap-3"
+                  >
                     <span className="text-meta">{s}★</span>
                     <span className="h-1.5 w-full bg-surface-2" aria-hidden="true">
                       <span className="block h-full bg-gold/70" style={{ width: `${pct}%` }} />
@@ -581,7 +650,12 @@ function DesignDetail() {
               {size ? ` · ${size}` : ""}
             </p>
           </div>
-          <Button loading={adding} disabled={disabled} onClick={() => commit()} className="shrink-0">
+          <Button
+            loading={adding}
+            disabled={disabled}
+            onClick={() => commit()}
+            className="shrink-0"
+          >
             {disabled ? "Unavailable" : `Add · ${format(type.price * qty)}`}
           </Button>
         </div>

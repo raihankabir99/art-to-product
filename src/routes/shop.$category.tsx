@@ -12,7 +12,10 @@ export const Route = createFileRoute("/shop/$category")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Category not found | Atelier Noir" }, { name: "robots", content: "noindex" }],
+        meta: [
+          { title: "Category not found | Atelier Noir" },
+          { name: "robots", content: "noindex" },
+        ],
       };
     }
     const { category } = loaderData;

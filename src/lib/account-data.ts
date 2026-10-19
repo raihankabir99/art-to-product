@@ -17,9 +17,15 @@ export interface OrderItem {
 export interface Order {
   id: string;
   placed: string;
-  /** index into ORDER_STEPS */
+  /** index into ORDER_STEPS or -1 if cancelled */
   step: number;
+  statusLabel?: string;
   total: number;
+  subtotal?: number;
+  shippingFee?: number;
+  tax?: number;
+  discountAmount?: number;
+  paymentMethod?: string;
   carrier: string;
   tracking: string;
   eta: string;
@@ -30,14 +36,48 @@ export interface Order {
 
 export const ORDERS: Order[] = [
   {
+    id: "ZOAL-2026-00124",
+    placed: "12 Aug 2026",
+    step: 3,
+    statusLabel: "In Production",
+    total: 29.99,
+    subtotal: 29.99,
+    shippingFee: 0,
+    tax: 4.8,
+    paymentMethod: "Visa ending in 4218",
+    carrier: "DHL Express",
+    tracking: "Pending dispatch",
+    eta: "18–20 Aug 2026",
+    address: ["Alex Rivera", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
+    stamps: ["12 Aug, 10:14", "12 Aug, 10:15", "13 Aug, 08:30", "13 Aug, 14:00"],
+    items: [
+      {
+        designSlug: "midnight-lion",
+        designName: "Midnight Lion",
+        productId: "tshirt",
+        productName: "Classic T-Shirt",
+        color: "Black",
+        colorValue: "#0d0d0d",
+        size: "XL",
+        qty: 1,
+        price: 29.99,
+      },
+    ],
+  },
+  {
     id: "AN-2026-00184",
     placed: "09 Aug 2026",
     step: 4,
+    statusLabel: "Shipped",
     total: 118,
+    subtotal: 103,
+    shippingFee: 15,
+    tax: 17.5,
+    paymentMethod: "Apple Pay",
     carrier: "DHL Express",
     tracking: "JJD0099887766",
     eta: "14–16 Aug 2026",
-    address: ["Ada Lindqvist", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
+    address: ["Alex Rivera", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
     stamps: ["09 Aug, 14:02", "09 Aug, 14:03", "10 Aug, 08:15", "11 Aug, 09:40", "12 Aug, 17:20"],
     items: [
       {
@@ -67,11 +107,16 @@ export const ORDERS: Order[] = [
     id: "AN-2026-00151",
     placed: "21 Jul 2026",
     step: 6,
+    statusLabel: "Delivered",
     total: 84,
+    subtotal: 84,
+    shippingFee: 0,
+    tax: 13.4,
+    paymentMethod: "Mastercard ending in 9903",
     carrier: "PostNL",
     tracking: "3SABCD1234567",
     eta: "Delivered 27 Jul 2026",
-    address: ["Ada Lindqvist", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
+    address: ["Alex Rivera", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
     stamps: [
       "21 Jul, 10:11",
       "21 Jul, 10:12",
@@ -110,11 +155,16 @@ export const ORDERS: Order[] = [
     id: "AN-2026-00097",
     placed: "02 Jun 2026",
     step: 6,
+    statusLabel: "Delivered",
     total: 32,
+    subtotal: 32,
+    shippingFee: 0,
+    tax: 5.1,
+    paymentMethod: "Visa ending in 4218",
     carrier: "PostNL",
     tracking: "3SEFGH7654321",
     eta: "Delivered 07 Jun 2026",
-    address: ["Ada Lindqvist", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
+    address: ["Alex Rivera", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
     stamps: [
       "02 Jun, 19:44",
       "02 Jun, 19:45",
@@ -134,6 +184,64 @@ export const ORDERS: Order[] = [
         colorValue: "#ddd5c4",
         qty: 1,
         price: 32,
+      },
+    ],
+  },
+  {
+    id: "AN-2026-00201",
+    placed: "18 Aug 2026",
+    step: 1,
+    statusLabel: "Processing",
+    total: 68,
+    subtotal: 68,
+    shippingFee: 0,
+    tax: 10.8,
+    paymentMethod: "Visa ending in 4218",
+    carrier: "DHL Express",
+    tracking: "Pending assignment",
+    eta: "24–26 Aug 2026",
+    address: ["Alex Rivera", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
+    stamps: ["18 Aug, 16:30", "18 Aug, 16:32"],
+    items: [
+      {
+        designSlug: "sound-of-monochrome",
+        designName: "Sound of Monochrome",
+        productId: "hoodie",
+        productName: "Heavyweight Hoodie",
+        color: "Heather Charcoal",
+        colorValue: "#2b2b2b",
+        size: "L",
+        qty: 1,
+        price: 68,
+      },
+    ],
+  },
+  {
+    id: "AN-2026-00045",
+    placed: "15 Apr 2026",
+    step: -1,
+    statusLabel: "Cancelled",
+    total: 45,
+    subtotal: 45,
+    shippingFee: 0,
+    tax: 7.2,
+    paymentMethod: "Visa ending in 4218",
+    carrier: "PostNL",
+    tracking: "Cancelled upon request",
+    eta: "Order cancelled & refunded",
+    address: ["Alex Rivera", "Prinsengracht 214", "1016 HD Amsterdam", "Netherlands"],
+    stamps: ["15 Apr, 11:00", "15 Apr, 11:02", "15 Apr, 12:45 (Cancelled)"],
+    items: [
+      {
+        designSlug: "minimal-geometry",
+        designName: "Minimal Geometry",
+        productId: "poster",
+        productName: "Framed Poster",
+        color: "Oak Frame",
+        colorValue: "#40352c",
+        size: "70×100cm",
+        qty: 1,
+        price: 45,
       },
     ],
   },

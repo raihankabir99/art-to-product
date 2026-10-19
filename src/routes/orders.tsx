@@ -1,130 +1,305 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { PageHero } from "@/components/store/page";
 import { Mockup } from "@/components/store/Mockup";
-import { Notice, ORDER_STEPS, Timeline } from "@/components/store/ui";
+import { Field, Notice, Timeline } from "@/components/store/ui";
 import { useStore } from "@/components/store/store";
-import { ORDERS, orderById, type Order } from "@/lib/account-data";
+import { ORDERS as INITIAL_SAMPLE_ORDERS, type Order } from "@/lib/account-data";
+import { orderService } from "@/lib/services/order-service";
 import { designBySlug } from "@/lib/catalog";
+import { Truck, Check, MapPin, Package, AlertTriangle, ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/orders")({
   head: () => ({
     meta: [
       { title: "Order Tracking | Atelier Noir" },
-      { name: "description", content: "Follow your made-to-order parcel from production to your door." },
+      {
+        name: "description",
+        content: "Follow your made-to-order parcel from production to your door.",
+      },
       { property: "og:title", content: "Order Tracking | Atelier Noir" },
-      { property: "og:description", content: "Follow your made-to-order parcel from production to your door." },
+      {
+        property: "og:description",
+        content: "Follow your made-to-order parcel from production to your door.",
+      },
     ],
   }),
-  component: Orders,
+  component: OrdersPage,
 });
 
-function Orders() {
-  const { format } = useStore();
-  const [query, setQuery] = useState("");
-  const [order, setOrder] = useState<Order>(ORDERS[0]!);
+function OrdersPage() {
+  const { format, user } = useStore();
+  const [query, setQuery] = useState("ZOAL-2026-00124");
+  const [orderList, setOrderList] = useState<Order[]>(INITIAL_SAMPLE_ORDERS);
+  const [order, setOrder] = useState<Order>(INITIAL_SAMPLE_ORDERS[0]!);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const track = (e: React.FormEvent) => {
+  const stepsList = [
+    "Order Placed",
+    "Payment Confirmed",
+    "Sent to Production",
+    "In Production",
+    "Shipped",
+    "Delivered",
+  ];
+
+  useEffect(() => {
+    orderService.getOrdersForUser(user?.id || "", user?.email).then((records) => {
+      if (records.length > 0) {
+        const mapped = records.map(orderService.mapRecordToUIOrder);
+        setOrderList(mapped);
+        setOrder(mapped[0]!);
+      }
+    });
+  }, [user]);
+
+  const track = async (e: React.FormEvent) => {
     e.preventDefault();
-    const found = orderById(query.trim().toUpperCase());
-    if (!found) {
-      setError("We can't find that order number. Check the confirmation email — it looks like AN-2026-00184.");
-      return;
+    if (!query.trim()) return;
+
+    setLoading(true);
+    try {
+      const record = await orderService.getOrderByIdOrNumber(query.trim());
+      if (!record) {
+        setError(
+          "We can't find that order number. Please verify your reference (e.g. ZOAL-2026-00124 or AN-2026-00184).",
+        );
+        return;
+      }
+      setError(null);
+      const mapped = orderService.mapRecordToUIOrder(record);
+      setOrder(mapped);
+      setOrderList((prev) => (prev.some((o) => o.id === mapped.id) ? prev : [mapped, ...prev]));
+    } finally {
+      setLoading(false);
     }
-    setError(null);
-    setOrder(found);
   };
 
   return (
     <>
-      <PageHero title="Order tracking" intro="Enter your order number to follow production and delivery." trail={[{ label: "Orders" }]} />
+      <PageHero
+        eyebrow="Real-Time Tracking"
+        title="Order Tracking"
+        intro="Enter your order reference to follow production, printing, and delivery milestones."
+        trail={[{ label: "Account", to: "/account" }, { label: "Orders" }]}
+      />
 
-      <section className="section container-page">
-        <form className="grid max-w-xl gap-4 sm:grid-cols-[minmax(0,1fr)_auto]" onSubmit={track}>
-          <div>
-            <label htmlFor="order-no" className="text-label text-muted-foreground">Order number</label>
-            <input
+      <section className="section container-page max-w-4xl space-y-10">
+        {/* Tracking form */}
+        <div className="border border-border bg-surface p-6 sm:p-8">
+          <form className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto]" onSubmit={track}>
+            <Field
+              label="Order Reference Number"
               id="order-no"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="AN-2026-00184"
-              aria-invalid={error ? true : undefined}
-              className="text-body-sm mt-3 h-12 w-full border border-border bg-transparent px-4 placeholder:text-muted-foreground focus-visible:border-foreground"
+              placeholder="ZOAL-2026-00124 or AN-2026-00184"
+              error={error || undefined}
             />
-          </div>
-          <Button className="h-12 self-end" type="submit">Track</Button>
-        </form>
-
-        {error ? <div className="mt-6 max-w-xl"><Notice tone="error" title="Order not found" body={error} /></div> : null}
-
-        <div className="mt-6 flex flex-wrap gap-2">
-          {ORDERS.map((o) => (
-            <button
-              key={o.id}
-              type="button"
-              onClick={() => { setOrder(o); setError(null); }}
-              aria-pressed={order.id === o.id}
-              className={`text-label flex min-h-11 items-center border px-4 ${order.id === o.id ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground"}`}
+            <Button
+              className="h-12 self-end uppercase text-xs tracking-wider px-6"
+              type="submit"
+              loading={loading}
             >
-              {o.id}
+              Track Order
+            </Button>
+          </form>
+
+          <p className="text-meta text-xs text-muted-foreground mt-3">
+            Demo quick numbers:{" "}
+            <button
+              type="button"
+              onClick={() => setQuery("ZOAL-2026-00124")}
+              className="text-gold underline"
+            >
+              ZOAL-2026-00124
+            </button>{" "}
+            ·{" "}
+            <button
+              type="button"
+              onClick={() => setQuery("AN-2026-00184")}
+              className="text-gold underline"
+            >
+              AN-2026-00184
+            </button>{" "}
+            ·{" "}
+            <button
+              type="button"
+              onClick={() => setQuery("AN-2026-00151")}
+              className="text-gold underline"
+            >
+              AN-2026-00151
             </button>
-          ))}
+          </p>
         </div>
 
-        <div className="mt-14 grid gap-12 lg:grid-cols-[1fr_1.1fr]">
-          <div>
-            <h2 className="text-h2">{order.id}</h2>
-            <p className="text-meta mt-2">Placed {order.placed} · {order.items.length} item{order.items.length > 1 ? "s" : ""} · {format(order.total)}</p>
-
-            <ul className="mt-8 divide-y divide-border border-y border-border">
-              {order.items.map((item) => {
-                const design = designBySlug(item.designSlug);
-                return (
-                  <li key={item.designSlug + item.productId} className="grid grid-cols-[72px_minmax(0,1fr)_auto] items-center gap-4 py-5">
-                    <div className="border border-border">
-                      {design ? <Mockup design={design} productId={item.productId} colorValue={item.colorValue} /> : null}
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-h4 truncate">{item.designName} — {item.productName}</p>
-                      <p className="text-meta mt-1">{item.color}{item.size ? ` · ${item.size}` : ""} · ×{item.qty}</p>
-                    </div>
-                    <span className="text-price">{format(item.price * item.qty)}</span>
-                  </li>
-                );
-              })}
-            </ul>
-
-            <div className="mt-8 grid gap-8 sm:grid-cols-2">
+        {/* Active Tracked Order Display */}
+        {order && (
+          <div className="border border-border bg-surface p-6 sm:p-8 space-y-8 animate-in fade-in duration-300">
+            {/* Header info */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
               <div>
-                <p className="text-label text-muted-foreground">Delivering to</p>
-                <address className="text-body-sm mt-3 not-italic">
-                  {order.address.map((l) => (<span key={l}>{l}<br /></span>))}
+                <div className="flex items-center gap-2.5">
+                  <span className="text-label text-gold text-xs uppercase tracking-wider font-semibold">
+                    Order Reference
+                  </span>
+                  <span className="text-border">·</span>
+                  <span className="text-meta text-muted-foreground">Placed {order.placed}</span>
+                </div>
+                <h2 className="text-h3 font-medium mt-1">#{order.id}</h2>
+              </div>
+              <div>
+                <span className="text-label px-3.5 py-1.5 bg-surface-2 border border-gold text-gold font-medium text-xs">
+                  {order.statusLabel || (order.step === 6 ? "Delivered" : "In Production")}
+                </span>
+              </div>
+            </div>
+
+            {/* Timeline */}
+            <div>
+              <p className="text-label uppercase text-xs font-semibold text-muted-foreground mb-4">
+                Production & Delivery Milestone Timeline
+              </p>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-6 border border-border bg-surface-2/40 p-5">
+                {stepsList.map((stepName, i) => {
+                  const isCompleted = order.step > i;
+                  const isCurrent = order.step === i;
+                  const isUpcoming = order.step < i;
+
+                  return (
+                    <div key={stepName} className="flex flex-col items-center text-center">
+                      <div
+                        className={cn(
+                          "grid size-8 place-items-center border text-xs font-medium transition-colors mb-2",
+                          isCompleted && "border-gold bg-gold text-background",
+                          isCurrent && "border-gold text-gold ring-2 ring-gold/20 animate-pulse",
+                          isUpcoming && "border-border text-muted-foreground bg-surface",
+                        )}
+                      >
+                        {isCompleted ? <Check className="size-4" /> : i + 1}
+                      </div>
+                      <p
+                        className={cn(
+                          "text-xs font-medium leading-tight",
+                          isCompleted && "text-foreground",
+                          isCurrent && "text-gold font-semibold",
+                          isUpcoming && "text-muted-foreground",
+                        )}
+                      >
+                        {stepName}
+                      </p>
+                      <span className="text-[10px] text-muted-foreground mt-1">
+                        {isCompleted ? "Done" : isCurrent ? "Active" : "Upcoming"}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Items */}
+            <div>
+              <p className="text-label uppercase text-xs font-semibold text-muted-foreground mb-4">
+                Articles in this shipment ({order.items.length})
+              </p>
+              <div className="divide-y divide-border border-y border-border">
+                {order.items.map((item, idx) => {
+                  const design = designBySlug(item.designSlug);
+                  return (
+                    <div
+                      key={idx}
+                      className="grid grid-cols-[80px_minmax(0,1fr)_auto] items-center gap-4 py-4"
+                    >
+                      <div className="aspect-square border border-border bg-surface-2">
+                        {design && (
+                          <Mockup
+                            design={design}
+                            productId={item.productId}
+                            colorValue={item.colorValue}
+                          />
+                        )}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-label text-[10px] uppercase tracking-wider text-gold truncate">
+                          {item.designName}
+                        </p>
+                        <h4 className="text-body-sm font-medium truncate mt-0.5">
+                          {item.productName}
+                        </h4>
+                        <p className="text-meta text-muted-foreground mt-0.5">
+                          {item.color} {item.size ? `· Size ${item.size}` : ""} · Qty {item.qty}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-price font-medium text-body-sm">
+                          {format(item.price * item.qty)}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Details */}
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="border border-border p-5">
+                <p className="text-label uppercase tracking-wider text-xs font-semibold text-muted-foreground flex items-center gap-2 mb-3">
+                  <Truck className="size-3.5 text-gold" /> Carrier & Transit
+                </p>
+                <div className="space-y-1 text-body-sm">
+                  <p>
+                    <span className="text-muted-foreground">Carrier:</span>{" "}
+                    <strong className="text-foreground">{order.carrier}</strong>
+                  </p>
+                  <p>
+                    <span className="text-muted-foreground">Tracking ID:</span>{" "}
+                    <span className="font-mono text-gold">{order.tracking}</span>
+                  </p>
+                  <p>
+                    <span className="text-muted-foreground">ETA:</span> {order.eta}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border border-border p-5">
+                <p className="text-label uppercase tracking-wider text-xs font-semibold text-muted-foreground flex items-center gap-2 mb-3">
+                  <MapPin className="size-3.5 text-gold" /> Destination
+                </p>
+                <address className="text-body-sm not-italic space-y-0.5 text-muted-foreground">
+                  {order.address.map((line, lIdx) => (
+                    <div key={lIdx} className={lIdx === 0 ? "font-medium text-foreground" : ""}>
+                      {line}
+                    </div>
+                  ))}
                 </address>
               </div>
+            </div>
+
+            {/* Support Box */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border border-border bg-surface-2/60 p-5">
               <div>
-                <p className="text-label text-muted-foreground">Carrier</p>
-                <p className="text-body-sm mt-3">{order.carrier}</p>
-                <p className="text-meta mt-1">Tracking {order.tracking}</p>
-                <p className="text-meta mt-1">{order.eta}</p>
+                <p className="text-label uppercase tracking-wider text-xs font-semibold">
+                  Need help with this shipment?
+                </p>
+                <p className="text-meta text-muted-foreground mt-0.5">
+                  Our concierge team can assist with delivery instructions or courier updates.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2.5 shrink-0">
+                <Button asChild variant="secondary" size="sm">
+                  <Link to="/contact">Contact Support</Link>
+                </Button>
+                <Button asChild variant="ghost" size="sm">
+                  <Link to="/faq">View FAQ</Link>
+                </Button>
               </div>
             </div>
-
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button asChild variant="secondary"><Link to="/returns">Start a return</Link></Button>
-              <Button asChild variant="secondary"><Link to="/contact">Contact the studio</Link></Button>
-            </div>
           </div>
-
-          <div className="border border-border p-6 lg:p-8">
-            <h2 className="text-h3">Production and delivery</h2>
-            <p className="text-meta mt-2">Each piece is made after you order it, so the first steps take a little longer.</p>
-            <div className="mt-8">
-              <Timeline steps={ORDER_STEPS} current={order.step} stamps={order.stamps} />
-            </div>
-          </div>
-        </div>
+        )}
       </section>
     </>
   );

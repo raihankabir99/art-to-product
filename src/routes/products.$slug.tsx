@@ -34,6 +34,7 @@ import {
   DEVICE_GROUPS,
   FORMAT_OPTIONS,
   POSTER_FORMATS,
+  getStaticProductShot,
   optionsFor,
   parseProductSlug,
   productSlug,
@@ -122,9 +123,10 @@ function ProductPage() {
   }, []);
 
   const color = type.colors.find((c) => c.name === colorName) ?? type.colors[0]!;
+  const staticLifestyle = getStaticProductShot(design.slug, productId);
   const media = useMemo(
-    () => buildMedia(type, color.value, color.tone),
-    [type, color.value, color.tone],
+    () => buildMedia(type, color.value, color.tone, staticLifestyle),
+    [type, color.value, color.tone, staticLifestyle],
   );
   const kinds = optionsFor(type);
   const soldOut = variantAvailability(productId, option) === "out";
@@ -173,7 +175,10 @@ function ProductPage() {
           <div ref={buyRef}>
             <div className="flex flex-wrap items-center gap-2">
               {design.badges.map((b) => (
-                <Badge key={b} variant={b === "Sale" ? "sale" : b === "Limited" ? "gold" : "default"}>
+                <Badge
+                  key={b}
+                  variant={b === "Sale" ? "sale" : b === "Limited" ? "gold" : "default"}
+                >
                   {b}
                 </Badge>
               ))}
@@ -268,7 +273,9 @@ function ProductPage() {
                 <WishlistButton slug={design.slug} label="Save" className="px-4" />
               </div>
               <p aria-live="polite" className="text-meta">
-                {added ? "Added to your bag. Keep browsing — nothing is made until you order." : "\u00A0"}
+                {added
+                  ? "Added to your bag. Keep browsing — nothing is made until you order."
+                  : "\u00A0"}
               </p>
             </div>
           </div>

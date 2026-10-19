@@ -68,7 +68,13 @@ export function ShopView({
     setFilters({ ...filters, [key]: (filters[key] as string[]).filter((v) => v !== value) });
 
   const chips: { key: keyof ShopFilters; value: string; label: string }[] = [
-    ...(lockTypes ? [] : filters.types.map((t) => ({ key: "types" as const, value: t, label: productType(t).name }))),
+    ...(lockTypes
+      ? []
+      : filters.types.map((t) => ({
+          key: "types" as const,
+          value: t,
+          label: productType(t).name,
+        }))),
     ...filters.sizes.map((s) => ({ key: "sizes" as const, value: s, label: `Size ${s}` })),
     ...filters.colors.map((c) => ({ key: "colors" as const, value: c, label: c })),
     ...filters.bands.map((b) => ({
@@ -116,9 +122,17 @@ export function ShopView({
         {chips.length ? (
           <div className="container-page flex flex-wrap items-center gap-2 border-t border-border py-3">
             {chips.map((c) => (
-              <Chip key={`${c.key}-${c.value}`} label={c.label} onRemove={() => removeChip(c.key, c.value)} />
+              <Chip
+                key={`${c.key}-${c.value}`}
+                label={c.label}
+                onRemove={() => removeChip(c.key, c.value)}
+              />
             ))}
-            <button type="button" onClick={clearAll} className="text-label link-underline ml-2 min-h-11">
+            <button
+              type="button"
+              onClick={clearAll}
+              className="text-label link-underline ml-2 min-h-11"
+            >
               Clear all
             </button>
           </div>

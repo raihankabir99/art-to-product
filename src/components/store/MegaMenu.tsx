@@ -1,3 +1,4 @@
+import type { ComponentProps } from "react";
 import { Link } from "@tanstack/react-router";
 import { COLLECTIONS, DESIGNS, PRODUCT_TYPES, designBySlug, productType } from "@/lib/catalog";
 import type { ProductTypeId } from "@/lib/catalog";
@@ -7,14 +8,10 @@ function ColumnHeading({ children }: { children: React.ReactNode }) {
   return <h3 className="text-label text-muted-foreground">{children}</h3>;
 }
 
-function MenuLink({
-  children,
-  ...rest
-}: { children: React.ReactNode } & Record<string, unknown>) {
+function MenuLink({ children, ...rest }: ComponentProps<typeof Link>) {
   return (
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     <Link
-      {...(rest as any)}
+      {...rest}
       className="text-body-sm link-underline inline-block py-1 text-foreground/85 hover:text-foreground"
     >
       {children}

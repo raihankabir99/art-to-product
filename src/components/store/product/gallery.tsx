@@ -10,15 +10,28 @@ export interface MediaShot {
   view: MockupView;
   colorValue: string;
   tone: "light" | "dark";
+  staticImage?: string | undefined;
 }
 
 /** Five consistent framings generated from one artwork + one blank. */
-export function buildMedia(type: ProductType, colorValue: string, tone: "light" | "dark"): MediaShot[] {
+export function buildMedia(
+  type: ProductType,
+  colorValue: string,
+  tone: "light" | "dark",
+  staticLifestyleImage?: string | undefined,
+): MediaShot[] {
   const alt = type.colors.find((c) => c.value !== colorValue) ?? type.colors[0]!;
   return [
+    {
+      id: "lifestyle",
+      label: "In context",
+      view: "lifestyle",
+      colorValue,
+      tone,
+      staticImage: staticLifestyleImage,
+    },
     { id: "front", label: "Front", view: "front", colorValue, tone },
     { id: "back", label: "Back", view: "back", colorValue, tone },
-    { id: "lifestyle", label: "In context", view: "lifestyle", colorValue, tone },
     { id: "detail", label: "Print detail", view: "detail", colorValue, tone },
     { id: "closeup", label: "Colourway", view: "front", colorValue: alt.value, tone: alt.tone },
   ];
@@ -86,16 +99,28 @@ export function ProductImageViewer({
 
         <div className="flex min-h-0 flex-1 items-center justify-center px-4 py-6 sm:px-16">
           <div className="w-full max-w-2xl">
-            <Mockup
-              key={shot.id}
-              design={design}
-              productId={type.id}
-              view={shot.view}
-              colorValue={shot.colorValue}
-              tone={shot.tone}
-              priority
-              className="fade-in-soft"
-            />
+            {shot.staticImage ? (
+              <div className="aspect-square w-full overflow-hidden border border-border bg-surface">
+                <img
+                  src={shot.staticImage}
+                  alt={`${design.name} ${type.name} - ${shot.label}`}
+                  width={1024}
+                  height={1024}
+                  className="size-full object-cover object-center fade-in-soft"
+                />
+              </div>
+            ) : (
+              <Mockup
+                key={shot.id}
+                design={design}
+                productId={type.id}
+                view={shot.view}
+                colorValue={shot.colorValue}
+                tone={shot.tone}
+                priority
+                className="fade-in-soft"
+              />
+            )}
           </div>
         </div>
 
@@ -137,13 +162,24 @@ export function ProductMediaGallery({
   type: ProductType;
   media: MediaShot[];
 }) {
-  const [index, setIndex] = useState(0);
+  const getDefaultIndex = () => {
+    const idx = media.findIndex((m) => Boolean(m.staticImage));
+    return idx >= 0 ? idx : 0;
+  };
+
+  const [index, setIndex] = useState(getDefaultIndex);
   const [viewer, setViewer] = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
+  const currentColor = media[0]?.colorValue;
 
   useEffect(() => {
-    setIndex(0);
-  }, [type.id, media[0]?.colorValue]);
+    const idx = media.findIndex((m) => Boolean(m.staticImage));
+    const targetIdx = idx >= 0 ? idx : 0;
+    setIndex(targetIdx);
+    if (trackRef.current) {
+      trackRef.current.scrollLeft = trackRef.current.clientWidth * targetIdx;
+    }
+  }, [type.id, currentColor, media]);
 
   const onScroll = useCallback(() => {
     const el = trackRef.current;
@@ -175,14 +211,27 @@ export function ProductMediaGallery({
               aria-label={`Open ${m.label} image, ${i + 1} of ${media.length}`}
               className="w-full shrink-0 snap-center border border-border"
             >
-              <Mockup
-                design={design}
-                productId={type.id}
-                view={m.view}
-                colorValue={m.colorValue}
-                tone={m.tone}
-                priority={i === 0}
-              />
+              {m.staticImage ? (
+                <div className="aspect-square w-full overflow-hidden bg-surface">
+                  <img
+                    src={m.staticImage}
+                    alt={`${design.name} ${type.name} - ${m.label}`}
+                    loading={i === 0 ? "eager" : "lazy"}
+                    width={1024}
+                    height={1024}
+                    className="size-full object-cover object-center"
+                  />
+                </div>
+              ) : (
+                <Mockup
+                  design={design}
+                  productId={type.id}
+                  view={m.view}
+                  colorValue={m.colorValue}
+                  tone={m.tone}
+                  priority={i === 0}
+                />
+              )}
             </button>
           ))}
         </div>
@@ -191,7 +240,10 @@ export function ProductMediaGallery({
             {media.map((m, i) => (
               <span
                 key={m.id}
-                className={cn("h-px flex-1 transition-colors", i === index ? "bg-gold" : "bg-border")}
+                className={cn(
+                  "h-px flex-1 transition-colors",
+                  i === index ? "bg-gold" : "bg-border",
+                )}
               />
             ))}
           </div>
@@ -217,13 +269,26 @@ export function ProductMediaGallery({
               )}
             >
               <span className="sr-only">{m.label}</span>
-              <Mockup
-                design={design}
-                productId={type.id}
-                view={m.view}
-                colorValue={m.colorValue}
-                tone={m.tone}
-              />
+              {m.staticImage ? (
+                <div className="aspect-square w-full overflow-hidden bg-surface">
+                  <img
+                    src={m.staticImage}
+                    alt={`${design.name} ${type.name} - ${m.label}`}
+                    loading="lazy"
+                    width={1024}
+                    height={1024}
+                    className="size-full object-cover object-center"
+                  />
+                </div>
+              ) : (
+                <Mockup
+                  design={design}
+                  productId={type.id}
+                  view={m.view}
+                  colorValue={m.colorValue}
+                  tone={m.tone}
+                />
+              )}
             </button>
           ))}
         </div>
@@ -235,16 +300,29 @@ export function ProductMediaGallery({
             className="block w-full cursor-zoom-in border border-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
             aria-label={`Open ${shot.label} image full screen`}
           >
-            <Mockup
-              key={`${shot.id}-${shot.colorValue}`}
-              design={design}
-              productId={type.id}
-              view={shot.view}
-              colorValue={shot.colorValue}
-              tone={shot.tone}
-              priority
-              className="fade-in-soft"
-            />
+            {shot.staticImage ? (
+              <div className="aspect-square w-full overflow-hidden bg-surface">
+                <img
+                  src={shot.staticImage}
+                  alt={`${design.name} ${type.name} - ${shot.label}`}
+                  loading="eager"
+                  width={1024}
+                  height={1024}
+                  className="size-full object-cover object-center fade-in-soft"
+                />
+              </div>
+            ) : (
+              <Mockup
+                key={`${shot.id}-${shot.colorValue}`}
+                design={design}
+                productId={type.id}
+                view={shot.view}
+                colorValue={shot.colorValue}
+                tone={shot.tone}
+                priority
+                className="fade-in-soft"
+              />
+            )}
           </button>
           <span className="text-meta pointer-events-none absolute bottom-3 left-3 border border-border bg-background/80 px-2 py-1 tabular-nums backdrop-blur">
             {index + 1} / {media.length}

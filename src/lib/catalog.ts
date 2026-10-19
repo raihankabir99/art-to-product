@@ -388,12 +388,7 @@ export const categorySlugForType = (id: ProductTypeId) =>
 export type Badge = "New" | "Bestseller" | "Limited" | "Sale";
 
 export type DesignStyle =
-  | "Minimal"
-  | "Typography"
-  | "Graphic"
-  | "Illustration"
-  | "Artistic"
-  | "Lifestyle";
+  "Minimal" | "Typography" | "Graphic" | "Illustration" | "Artistic" | "Lifestyle";
 
 export const DESIGN_STYLES: DesignStyle[] = [
   "Minimal",
@@ -440,7 +435,6 @@ export interface Design {
   style: DesignStyle;
   edits: Edit[];
 }
-
 
 const ALL: ProductTypeId[] = PRODUCT_TYPES.map((p) => p.id);
 
@@ -521,8 +515,7 @@ export const DESIGNS: Design[] = [
     year: "2026",
     artTone: "light",
     art: artDune,
-    story:
-      "The horizon line of an empty quarter at dusk, abstracted into two overlapping ridges.",
+    story: "The horizon line of an empty quarter at dusk, abstracted into two overlapping ridges.",
     badges: ["New"],
     products: ["tshirt", "hoodie", "tote", "mug", "phonecase", "poster", "cushion", "cap"],
     rating: 4.6,
@@ -546,6 +539,135 @@ export const DESIGNS: Design[] = [
     style: "Lifestyle",
     edits: ["Minimal", "Gift"],
   },
+  {
+    slug: "abstract-horizon",
+    name: "Abstract Horizon",
+    collection: "Meridian",
+    studio: "Atelier Noir Studio",
+    year: "2026",
+    artTone: "light",
+    art: artDune,
+    story:
+      "Layered monochromatic gradient planes depicting the serene transition from day to twilight.",
+    badges: ["New"],
+    products: ALL,
+    rating: 4.9,
+    reviews: 142,
+    style: "Minimal",
+    edits: ["New Drop", "Minimal", "Art"],
+  },
+  {
+    slug: "urban-echo",
+    name: "Urban Echo",
+    collection: "Street Culture",
+    studio: "Studio Halden",
+    year: "2026",
+    artTone: "light",
+    art: artLion,
+    story: "Architectural grid lines intersect with raw hand-drawn brutalist typography.",
+    badges: ["Bestseller"],
+    products: ALL,
+    rating: 4.8,
+    reviews: 215,
+    style: "Graphic",
+    edits: ["Street", "Best Sellers"],
+  },
+  {
+    slug: "desert-geometry",
+    name: "Desert Geometry",
+    collection: "Meridian",
+    studio: "Casa Lume",
+    year: "2025",
+    artTone: "dark",
+    art: artSolstice,
+    story: "Sharp geometric silhouettes inspired by ancient sun dials and arid sand formations.",
+    badges: ["Limited"],
+    products: ["tshirt", "hoodie", "tote", "poster", "mug", "cushion"],
+    rating: 4.7,
+    reviews: 89,
+    style: "Artistic",
+    edits: ["Art", "Minimal"],
+  },
+  {
+    slug: "quiet-motion",
+    name: "Quiet Motion",
+    collection: "Minimal",
+    studio: "Atelier Noir Studio",
+    year: "2026",
+    artTone: "light",
+    art: artNordic,
+    story: "A fluid single wave form expressing perpetual rhythm without noise.",
+    badges: [],
+    products: ALL,
+    rating: 4.9,
+    reviews: 112,
+    style: "Minimal",
+    edits: ["Minimal"],
+  },
+  {
+    slug: "monochrome-bloom",
+    name: "Monochrome Bloom",
+    collection: "Mediterraneo",
+    studio: "Casa Lume",
+    year: "2026",
+    artTone: "dark",
+    art: artOlive,
+    story: "Botanical charcoal line art capturing midnight blossoms on heavy texture.",
+    badges: ["New"],
+    products: ALL,
+    rating: 4.8,
+    reviews: 98,
+    style: "Illustration",
+    edits: ["New Drop", "Gift", "Seasonal"],
+  },
+  {
+    slug: "after-dark",
+    name: "After Dark",
+    collection: "Nocturne",
+    studio: "Atelier Noir Studio",
+    year: "2025",
+    artTone: "light",
+    art: artLion,
+    story: "High-contrast midnight graphic exploring shadow, light and negative space.",
+    badges: ["Bestseller"],
+    products: ALL,
+    rating: 4.9,
+    reviews: 310,
+    style: "Graphic",
+    edits: ["Best Sellers", "Street"],
+  },
+  {
+    slug: "modern-heritage",
+    name: "Modern Heritage",
+    collection: "Typography",
+    studio: "Studio Halden",
+    year: "2025",
+    artTone: "dark",
+    art: artNordic,
+    story: "Classic editorial serif lettering merged with clean contemporary geometric framing.",
+    badges: [],
+    products: ["tshirt", "hoodie", "sweatshirt", "tote", "notebook", "poster"],
+    rating: 4.7,
+    reviews: 154,
+    style: "Typography",
+    edits: ["Minimal", "Gift"],
+  },
+  {
+    slug: "sunday-studio",
+    name: "Sunday Studio",
+    collection: "Lifestyle",
+    studio: "Casa Lume",
+    year: "2026",
+    artTone: "light",
+    art: artCrane,
+    story: "Casual atelier pencil sketches created on relaxed weekend mornings.",
+    badges: ["New"],
+    products: ALL,
+    rating: 4.8,
+    reviews: 67,
+    style: "Lifestyle",
+    edits: ["New Drop", "Seasonal"],
+  },
 ];
 
 export const designBySlug = (slug: string) => DESIGNS.find((d) => d.slug === slug);
@@ -554,15 +676,79 @@ export interface Collection {
   slug: string;
   name: string;
   tagline: string;
+  image?: string;
   designs: string[];
 }
 
 export const COLLECTIONS: Collection[] = [
   {
+    slug: "new-drops",
+    name: "New Drops",
+    tagline: "The latest artwork, fresh off the press.",
+    image: "/images/collection-minimal.png",
+    designs: ["solstice", "dune-crescent", "abstract-horizon", "monochrome-bloom", "sunday-studio"],
+  },
+  {
+    slug: "minimal",
+    name: "Minimal",
+    tagline: "Quiet design. Strong identity.",
+    image: "/images/collection-minimal.png",
+    designs: ["solstice", "nordic-silence", "quiet-motion", "abstract-horizon", "paper-crane"],
+  },
+  {
+    slug: "street-culture",
+    name: "Street Culture",
+    tagline: "Urban perspectives and continuous line graphics.",
+    designs: ["midnight-lion", "urban-echo", "after-dark"],
+  },
+  {
+    slug: "art-graphics",
+    name: "Art & Graphics",
+    tagline: "Expressive forms and gallery-grade prints.",
+    designs: ["dune-crescent", "desert-geometry", "abstract-horizon", "midnight-lion"],
+  },
+  {
+    slug: "typography",
+    name: "Typography",
+    tagline: "Wordmarks, seals and typographic studies.",
+    designs: ["nordic-silence", "modern-heritage"],
+  },
+  {
+    slug: "summer",
+    name: "Summer Edit",
+    tagline: "Light tones and coastal geometry.",
+    designs: ["olive-line", "dune-crescent", "solstice"],
+  },
+  {
+    slug: "winter",
+    name: "Winter Edit",
+    tagline: "Monochrome motifs built for cold months.",
+    designs: ["midnight-lion", "after-dark", "nordic-silence"],
+  },
+  {
+    slug: "gift-edits",
+    name: "Gift Edits",
+    tagline: "Curated pieces made to share.",
+    designs: ["olive-line", "paper-crane", "monochrome-bloom", "modern-heritage"],
+  },
+  {
+    slug: "best-sellers",
+    name: "Best Sellers",
+    tagline: "The signature designs carrying our brand worldwide.",
+    designs: ["midnight-lion", "olive-line", "urban-echo", "after-dark"],
+  },
+  {
+    slug: "limited-editions",
+    name: "Limited Editions",
+    tagline: "Small run prints and exclusive studio drops.",
+    designs: ["nordic-silence", "desert-geometry"],
+  },
+  {
     slug: "nocturne",
     name: "Nocturne",
     tagline: "Line work made for low light.",
-    designs: ["midnight-lion", "paper-crane"],
+    image: "/images/collection-minimal.png",
+    designs: ["midnight-lion", "paper-crane", "after-dark"],
   },
   {
     slug: "northern-light",
@@ -574,13 +760,13 @@ export const COLLECTIONS: Collection[] = [
     slug: "mediterraneo",
     name: "Mediterraneo",
     tagline: "Sun-worn neutrals from the south.",
-    designs: ["olive-line"],
+    designs: ["olive-line", "monochrome-bloom"],
   },
   {
     slug: "meridian",
     name: "Meridian",
     tagline: "Horizons from every longitude.",
-    designs: ["dune-crescent"],
+    designs: ["dune-crescent", "abstract-horizon", "desert-geometry"],
   },
 ];
 
@@ -591,14 +777,131 @@ export interface Article {
   readTime: string;
   date: string;
   excerpt: string;
+  image?: string;
 }
 
 export const ARTICLES: Article[] = [
   {
+    slug: "the-art-of-wearing-what-you-believe",
+    title: "The Art of Wearing What You Believe",
+    category: "Design",
+    readTime: "6 min read",
+    date: "18 Aug 2026",
+    excerpt:
+      "Explore how visual design becomes part of personal identity and everyday expression in modern culture.",
+    image:
+      "https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "the-story-behind-midnight-lion",
+    title: "The Story Behind Midnight Lion",
+    category: "Design",
+    readTime: "5 min read",
+    date: "12 Aug 2026",
+    excerpt:
+      "From a single continuous line to a house signature — the making of our most-loved design.",
+    image: "/images/blog-design.png",
+  },
+  {
+    slug: "how-to-build-a-minimal-everyday-wardrobe",
+    title: "How to Build a Minimal Everyday Wardrobe",
+    category: "Fashion",
+    readTime: "5 min read",
+    date: "10 Aug 2026",
+    excerpt:
+      "Curate a versatile, seasonless capsule of heavyweight tees, architectural hoodies, and clean accessories.",
+    image:
+      "https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "5-ways-to-style-an-oversized-hoodie",
+    title: "5 Ways to Style an Oversized Hoodie",
+    category: "Fashion",
+    readTime: "4 min read",
+    date: "24 Jul 2026",
+    excerpt:
+      "How to balance volume, texture, and architectural silhouettes with our 400gsm double-lined fleece hoodie.",
+    image: "/images/blog-style.png",
+  },
+  {
+    slug: "choosing-the-right-t-shirt-fit",
+    title: "Choosing the Right T-Shirt Fit",
+    category: "Product Guide",
+    readTime: "4 min read",
+    date: "19 Jul 2026",
+    excerpt:
+      "Everything you need to know about dropped shoulders, rib collars, 240gsm organic jersey, and chest measurements.",
+    image: "/images/blog-guide.png",
+  },
+  {
+    slug: "how-to-care-for-printed-apparel",
+    title: "How to Care for Printed Apparel",
+    category: "Care Guide",
+    readTime: "3 min read",
+    date: "08 Jul 2026",
+    excerpt:
+      "Wash cold, inside out, and air dry flat. Maximize the lifespan of your organic cotton and archival screen prints.",
+    image:
+      "https://images.unsplash.com/photo-1545291730-faff8ca1d4b0?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "minimal-design-in-modern-fashion",
+    title: "Minimal Design in Modern Fashion",
+    category: "Culture",
+    readTime: "6 min read",
+    date: "28 Jun 2026",
+    excerpt:
+      "An exploration of negative space, brutalist geometry, and understated elegance in Berlin, Copenhagen, and Paris.",
+    image:
+      "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "the-story-behind-graphic-t-shirts",
+    title: "The Story Behind Graphic T-Shirts",
+    category: "Culture",
+    readTime: "7 min read",
+    date: "14 Jun 2026",
+    excerpt:
+      "Trace how the humble cotton undershirt transformed into the most powerful personal gallery in modern society.",
+    image:
+      "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "t-shirt-vs-sweatshirt-guide",
+    title: "T-Shirt vs Sweatshirt: Which One Is Right For You?",
+    category: "Product Guide",
+    readTime: "4 min read",
+    date: "02 Jun 2026",
+    excerpt:
+      "Compare 240gsm jersey against 340gsm loopback fleece to find your ideal balance of breathability and insulation.",
+    image:
+      "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=1200&q=80",
+  },
+  {
+    slug: "choose-the-right-hoodie-fit",
+    title: "How to Choose the Right Hoodie Fit",
+    category: "Product Guide",
+    readTime: "4 min read",
+    date: "28 Jul 2026",
+    excerpt:
+      "Boxy, regular or relaxed — a short guide to finding the weight and drape that suits you.",
+    image: "/images/blog-guide.png",
+  },
+  {
+    slug: "style-minimal-graphic-tee",
+    title: "How to Style a Minimal Graphic T-Shirt",
+    category: "Fashion",
+    readTime: "4 min read",
+    date: "14 Jul 2026",
+    excerpt:
+      "Three quiet ways to build an outfit around a single considered graphic — without shouting.",
+    image: "/images/blog-style.png",
+  },
+  {
     slug: "one-design-many-objects",
     title: "One design, many objects",
-    category: "Studio",
-    readTime: "6 min",
+    category: "Brand Stories",
+    readTime: "6 min read",
     date: "12 Aug 2026",
     excerpt:
       "Why we build around the drawing instead of the garment, and what that changes for the people who wear it.",
@@ -606,8 +909,8 @@ export const ARTICLES: Article[] = [
   {
     slug: "print-on-demand-without-the-waste",
     title: "Print on demand, without the waste",
-    category: "Responsibility",
-    readTime: "4 min",
+    category: "Care Guide",
+    readTime: "4 min read",
     date: "28 Jul 2026",
     excerpt:
       "Nothing is made until it is ordered. A short account of what that means for inventory, water and returns.",
@@ -615,8 +918,8 @@ export const ARTICLES: Article[] = [
   {
     slug: "the-case-for-heavyweight-cotton",
     title: "The case for heavyweight cotton",
-    category: "Materials",
-    readTime: "5 min",
+    category: "Product Guide",
+    readTime: "5 min read",
     date: "09 Jul 2026",
     excerpt: "240gsm, garment-dyed, and why a tee should hold its shape after fifty washes.",
   },
@@ -633,14 +936,78 @@ export interface Region {
 }
 
 export const REGIONS: Region[] = [
-  { code: "EU", country: "Europe (EU)", currency: "EUR", symbol: "€", rate: 1, delivery: "3–5 working days", taxNote: "VAT included" },
-  { code: "GB", country: "United Kingdom", currency: "GBP", symbol: "£", rate: 0.85, delivery: "4–6 working days", taxNote: "UK VAT included" },
-  { code: "CH", country: "Switzerland", currency: "CHF", symbol: "CHF ", rate: 0.96, delivery: "5–7 working days", taxNote: "Duties calculated at checkout" },
-  { code: "NO", country: "Norway", currency: "NOK", symbol: "kr ", rate: 11.6, delivery: "5–7 working days", taxNote: "Duties calculated at checkout" },
-  { code: "US", country: "United States", currency: "USD", symbol: "$", rate: 1.09, delivery: "6–9 working days", taxNote: "Sales tax at checkout" },
-  { code: "CA", country: "Canada", currency: "CAD", symbol: "C$", rate: 1.48, delivery: "7–10 working days", taxNote: "Duties calculated at checkout" },
-  { code: "SA", country: "Saudi Arabia", currency: "SAR", symbol: "SR ", rate: 4.09, delivery: "7–10 working days", taxNote: "Duties calculated at checkout" },
-  { code: "BD", country: "Bangladesh", currency: "BDT", symbol: "৳", rate: 128, delivery: "9–14 working days", taxNote: "Duties calculated at checkout" },
+  {
+    code: "EU",
+    country: "Europe (EU)",
+    currency: "EUR",
+    symbol: "€",
+    rate: 1,
+    delivery: "3–5 working days",
+    taxNote: "VAT included",
+  },
+  {
+    code: "GB",
+    country: "United Kingdom",
+    currency: "GBP",
+    symbol: "£",
+    rate: 0.85,
+    delivery: "4–6 working days",
+    taxNote: "UK VAT included",
+  },
+  {
+    code: "CH",
+    country: "Switzerland",
+    currency: "CHF",
+    symbol: "CHF ",
+    rate: 0.96,
+    delivery: "5–7 working days",
+    taxNote: "Duties calculated at checkout",
+  },
+  {
+    code: "NO",
+    country: "Norway",
+    currency: "NOK",
+    symbol: "kr ",
+    rate: 11.6,
+    delivery: "5–7 working days",
+    taxNote: "Duties calculated at checkout",
+  },
+  {
+    code: "US",
+    country: "United States",
+    currency: "USD",
+    symbol: "$",
+    rate: 1.09,
+    delivery: "6–9 working days",
+    taxNote: "Sales tax at checkout",
+  },
+  {
+    code: "CA",
+    country: "Canada",
+    currency: "CAD",
+    symbol: "C$",
+    rate: 1.48,
+    delivery: "7–10 working days",
+    taxNote: "Duties calculated at checkout",
+  },
+  {
+    code: "SA",
+    country: "Saudi Arabia",
+    currency: "SAR",
+    symbol: "SR ",
+    rate: 4.09,
+    delivery: "7–10 working days",
+    taxNote: "Duties calculated at checkout",
+  },
+  {
+    code: "BD",
+    country: "Bangladesh",
+    currency: "BDT",
+    symbol: "৳",
+    rate: 128,
+    delivery: "9–14 working days",
+    taxNote: "Duties calculated at checkout",
+  },
 ];
 
 export const LANGUAGES = ["English", "Deutsch", "Français", "Español", "Italiano", "العربية"];

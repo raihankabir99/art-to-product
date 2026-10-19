@@ -131,23 +131,34 @@ export const FORMAT_OPTIONS: Partial<Record<ProductTypeId, { id: string; note: s
 };
 
 /** Mock delivery estimates for the estimator UI. */
-export const DELIVERY_COUNTRIES: { code: string; name: string; estimate: string; note: string }[] = [
-  { code: "DE", name: "Germany", estimate: "3–5 working days", note: "VAT included" },
-  { code: "FR", name: "France", estimate: "3–5 working days", note: "VAT included" },
-  { code: "IT", name: "Italy", estimate: "4–6 working days", note: "VAT included" },
-  { code: "ES", name: "Spain", estimate: "4–6 working days", note: "VAT included" },
-  { code: "NL", name: "Netherlands", estimate: "3–4 working days", note: "VAT included" },
-  { code: "BE", name: "Belgium", estimate: "3–4 working days", note: "VAT included" },
-  { code: "SE", name: "Sweden", estimate: "4–6 working days", note: "VAT included" },
-  { code: "DK", name: "Denmark", estimate: "4–6 working days", note: "VAT included" },
-  { code: "GB", name: "United Kingdom", estimate: "4–6 working days", note: "UK VAT included" },
-  { code: "CH", name: "Switzerland", estimate: "5–7 working days", note: "Duties at checkout" },
-  { code: "NO", name: "Norway", estimate: "5–7 working days", note: "Duties at checkout" },
-  { code: "SA", name: "Saudi Arabia", estimate: "7–10 working days", note: "Duties at checkout" },
-  { code: "AE", name: "United Arab Emirates", estimate: "7–10 working days", note: "Duties at checkout" },
-  { code: "US", name: "United States", estimate: "6–9 working days", note: "Sales tax at checkout" },
-  { code: "CA", name: "Canada", estimate: "7–10 working days", note: "Duties at checkout" },
-];
+export const DELIVERY_COUNTRIES: { code: string; name: string; estimate: string; note: string }[] =
+  [
+    { code: "DE", name: "Germany", estimate: "3–5 working days", note: "VAT included" },
+    { code: "FR", name: "France", estimate: "3–5 working days", note: "VAT included" },
+    { code: "IT", name: "Italy", estimate: "4–6 working days", note: "VAT included" },
+    { code: "ES", name: "Spain", estimate: "4–6 working days", note: "VAT included" },
+    { code: "NL", name: "Netherlands", estimate: "3–4 working days", note: "VAT included" },
+    { code: "BE", name: "Belgium", estimate: "3–4 working days", note: "VAT included" },
+    { code: "SE", name: "Sweden", estimate: "4–6 working days", note: "VAT included" },
+    { code: "DK", name: "Denmark", estimate: "4–6 working days", note: "VAT included" },
+    { code: "GB", name: "United Kingdom", estimate: "4–6 working days", note: "UK VAT included" },
+    { code: "CH", name: "Switzerland", estimate: "5–7 working days", note: "Duties at checkout" },
+    { code: "NO", name: "Norway", estimate: "5–7 working days", note: "Duties at checkout" },
+    { code: "SA", name: "Saudi Arabia", estimate: "7–10 working days", note: "Duties at checkout" },
+    {
+      code: "AE",
+      name: "United Arab Emirates",
+      estimate: "7–10 working days",
+      note: "Duties at checkout",
+    },
+    {
+      code: "US",
+      name: "United States",
+      estimate: "6–9 working days",
+      note: "Sales tax at checkout",
+    },
+    { code: "CA", name: "Canada", estimate: "7–10 working days", note: "Duties at checkout" },
+  ];
 
 /** Deterministic mock availability so disabled states can be previewed. */
 export function variantAvailability(productId: ProductTypeId, option?: string) {
@@ -218,3 +229,26 @@ export function relatedProducts(design: Design, productId: ProductTypeId) {
 
 export const allProductTypes = () => PRODUCT_TYPES;
 export const typeOf = (id: ProductTypeId) => productType(id);
+
+/**
+ * Static lifestyle / in-context photography shots migrated from v0.
+ * Keyed by product slug e.g. "midnight-lion-tshirt" or `${designSlug}-${PRODUCT_SLUGS[productId]}`.
+ */
+export const STATIC_PRODUCT_SHOTS: Partial<Record<string, string>> = {
+  "midnight-lion-tshirt": "/images/products/lion-tee.png",
+  "midnight-lion-hoodie": "/images/products/lion-hoodie.png",
+  "midnight-lion-tote": "/images/products/lion-tote.png",
+  "midnight-lion-mug": "/images/products/lion-mug.png",
+  "midnight-lion-phone-case": "/images/products/lion-phonecase.png",
+  "midnight-lion-poster": "/images/products/lion-poster.png",
+  "midnight-lion-cap": "/images/products/lion-cap.png",
+  "midnight-lion-cushion": "/images/products/lion-cushion.png",
+};
+
+export function getStaticProductShot(
+  designSlug: string,
+  productId: ProductTypeId,
+): string | undefined {
+  const slug = productSlug(designSlug, productId);
+  return STATIC_PRODUCT_SHOTS[slug];
+}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Heart, Plus } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Mockup } from "./Mockup";
@@ -23,7 +24,13 @@ export function WishlistButton({
       type="button"
       onClick={(e) => {
         e.preventDefault();
+        e.stopPropagation();
         toggleWish(slug);
+        if (!active) {
+          toast.success("Saved to wishlist");
+        } else {
+          toast.info("Removed from wishlist");
+        }
       }}
       aria-pressed={active}
       aria-label={active ? `Remove ${slug} from wishlist` : `Save ${slug} to wishlist`}
@@ -148,44 +155,97 @@ export function ProductCard({
             style={{ backgroundColor: c.value }}
           />
         ))}
-        <span className="sr-only">
-          Available in {type.colors.map((c) => c.name).join(", ")}
-        </span>
+        <span className="sr-only">Available in {type.colors.map((c) => c.name).join(", ")}</span>
         <span className="text-meta ml-auto">{type.category}</span>
       </div>
     </article>
   );
 }
 
-export function DesignCard({ design, className }: { design: Design; className?: string | undefined }) {
-  const names = design.products.slice(0, 4).map((p) => productType(p).name);
-  const rest = design.products.length - names.length;
+export function DesignCard({
+  design,
+  className,
+}: {
+  design: Design;
+  className?: string | undefined;
+}) {
+  const [hover, setHover] = useState(false);
+  const primaryProduct = design.products[0] ?? "tshirt";
+  const secondaryProduct = design.products[1] ?? primaryProduct;
+  const activeProductId = hover ? secondaryProduct : primaryProduct;
+
+  const names = design.products.slice(0, 5).map((p) => productType(p).name);
+  const restCount = design.products.length - names.length;
+  const badge = design.badges[0];
 
   return (
-    <article className={cn("group relative flex flex-col", className)}>
-      <Link
-        to="/designs/$slug"
-        params={{ slug: design.slug }}
-        className="relative block overflow-hidden border border-border bg-surface"
-      >
-        <div className="aspect-[4/5] w-full">
-          <Mockup design={design} productId={design.products[0] ?? "tshirt"} />
+    <article
+      className={cn("group relative flex flex-col", className)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <div className="relative overflow-hidden border border-border bg-surface">
+        <Link
+          to="/designs/$slug"
+          params={{ slug: design.slug }}
+          className="block aspect-[4/5] w-full"
+        >
+          <Mockup
+            design={design}
+            productId={activeProductId}
+            className="size-full transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-[1.03]"
+          />
+        </Link>
+
+        {badge ? (
+          <Badge
+            variant={badge === "Sale" ? "sale" : badge === "Limited" ? "gold" : "default"}
+            className="absolute left-3 top-3 z-10"
+          >
+            {badge}
+          </Badge>
+        ) : null}
+
+        <div className="absolute right-3 top-3 z-10 flex flex-col gap-2">
+          <WishlistButton slug={design.slug} />
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-background/85 px-4 py-3 backdrop-blur">
-          <span className="text-label">{design.products.length} products</span>
-          <span className="text-label text-gold">Explore design →</span>
-        </div>
-      </Link>
+
+        <Link
+          to="/designs/$slug"
+          params={{ slug: design.slug }}
+          className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 border-t border-border bg-background/90 px-4 py-3 backdrop-blur transition-transform duration-300 ease-[var(--ease-brand)] group-hover:translate-y-0"
+        >
+          <span className="text-label text-gold">
+            Available on {design.products.length} products
+          </span>
+          <span className="text-label inline-flex items-center gap-1 group-hover:underline">
+            Explore Design →
+          </span>
+        </Link>
+      </div>
 
       <div className="pt-4">
         <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-3">
-          <h3 className="text-h3 truncate">{design.name}</h3>
-          <span className="text-meta shrink-0">{design.collection}</span>
+          <h3 className="text-h3 truncate font-medium">
+            <Link
+              to="/designs/$slug"
+              params={{ slug: design.slug }}
+              className="hover:text-gold transition-colors"
+            >
+              {design.name}
+            </Link>
+          </h3>
+          <span className="text-meta shrink-0 text-muted-foreground">{design.collection}</span>
         </div>
-        <p className="text-meta mt-2">
-          Available on {names.join(" · ")}
-          {rest > 0 ? ` · +${rest} more` : ""}
-        </p>
+        <p className="text-meta mt-1.5 line-clamp-2 text-muted-foreground">{design.story}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-1.5 text-meta text-muted-foreground">
+          <span>{names.join(" · ")}</span>
+          {restCount > 0 ? (
+            <span className="rounded bg-surface-2 px-1.5 py-0.5 text-label-sm text-foreground">
+              +{restCount}
+            </span>
+          ) : null}
+        </div>
       </div>
     </article>
   );
@@ -197,12 +257,14 @@ export function CollectionCard({
   count,
   slug,
   design,
+  image,
 }: {
   name: string;
   tagline: string;
   count: number;
   slug: string;
   design: Design;
+  image?: string | undefined;
 }) {
   return (
     <Link
@@ -210,12 +272,23 @@ export function CollectionCard({
       params={{ slug }}
       className="group relative block overflow-hidden border border-border"
     >
-      <div className="aspect-[3/2] w-full overflow-hidden">
-        <Mockup
-          design={design}
-          productId={design.products[0] ?? "tshirt"}
-          className="h-full transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-105"
-        />
+      <div className="aspect-[3/2] w-full overflow-hidden bg-surface">
+        {image ? (
+          <img
+            src={image}
+            alt={`${name} collection editorial`}
+            loading="lazy"
+            width={1024}
+            height={680}
+            className="size-full object-cover object-center transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-105"
+          />
+        ) : (
+          <Mockup
+            design={design}
+            productId={design.products[0] ?? "tshirt"}
+            className="h-full transition-transform duration-700 ease-[var(--ease-brand)] group-hover:scale-105"
+          />
+        )}
       </div>
       <div className="flex items-end justify-between gap-4 border-t border-border p-5">
         <div className="min-w-0">

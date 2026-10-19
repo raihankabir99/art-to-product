@@ -1,0 +1,786 @@
+import {
+  AIFeature,
+  AIApprovalItem,
+  AutomationWorkflow,
+  AutomationLog,
+  AIInsight,
+  CustomerInquiry,
+  SEOCheckItem,
+} from "./types";
+
+export const AI_FEATURES_DATA: AIFeature[] = [
+  {
+    id: "feat_prod_desc",
+    name: "AI Product Description",
+    category: "Catalog",
+    description:
+      "Generates high-conversion European minimalist & luxury editorial product descriptions from artwork vector metadata.",
+    status: "Active",
+    lastActivity: "2 mins ago",
+    usageMetric: "482 runs this week",
+    tokensToday: "142k tokens",
+    latency: "620ms",
+    iconName: "Sparkles",
+  },
+  {
+    id: "feat_seo_gen",
+    name: "AI SEO Generator",
+    category: "Editorial",
+    description:
+      "Evaluates keyword densities, builds OpenGraph snippets, and synthesizes structured JSON-LD schemas.",
+    status: "Active",
+    lastActivity: "8 mins ago",
+    usageMetric: "310 runs this week",
+    tokensToday: "88k tokens",
+    latency: "410ms",
+    iconName: "Search",
+  },
+  {
+    id: "feat_blog_assist",
+    name: "AI Blog Assistant",
+    category: "Editorial",
+    description:
+      "Drafts long-form print culture journals, zero-waste essays, and artist feature profiles with multi-heading structures.",
+    status: "Active",
+    lastActivity: "24 mins ago",
+    usageMetric: "64 drafts generated",
+    tokensToday: "340k tokens",
+    latency: "1.4s",
+    iconName: "BookOpen",
+  },
+  {
+    id: "feat_trans",
+    name: "AI Translation",
+    category: "Editorial",
+    description:
+      "Culturally calibrated luxury translations across English, German (DE), French (FR), and Japanese (JA).",
+    status: "Active",
+    lastActivity: "12 mins ago",
+    usageMetric: "1,290 strings localized",
+    tokensToday: "92k tokens",
+    latency: "340ms",
+    iconName: "Globe",
+  },
+  {
+    id: "feat_prod_rec",
+    name: "AI Product Recommendation",
+    category: "Catalog",
+    description:
+      "Neural affinity matrix pairing artwork silhouettes with matching archival tote bags, caps, and art prints.",
+    status: "Active",
+    lastActivity: "Just now",
+    usageMetric: "18.4k patron impressions",
+    tokensToday: "210k tokens",
+    latency: "180ms",
+    iconName: "Layers",
+  },
+  {
+    id: "feat_cust_support",
+    name: "AI Customer Support",
+    category: "Operations",
+    description:
+      "Synthesizes empathetic, accurate POD tracking updates, carrier routing status, and fabric care guidance.",
+    status: "Ready",
+    lastActivity: "4 mins ago",
+    usageMetric: "148 suggestions generated",
+    tokensToday: "65k tokens",
+    latency: "510ms",
+    iconName: "MessageSquare",
+  },
+  {
+    id: "feat_search_assist",
+    name: "AI Search Assistant",
+    category: "Intelligence",
+    description:
+      "Vector semantic search engine parsing natural language patron queries (e.g. 'heavyweight boxy hoodie in moss green').",
+    status: "Active",
+    lastActivity: "Just now",
+    usageMetric: "3.2k queries routed",
+    tokensToday: "180k tokens",
+    latency: "95ms",
+    iconName: "Search",
+  },
+  {
+    id: "feat_review_analysis",
+    name: "AI Review Analysis",
+    category: "Intelligence",
+    description:
+      "Performs sentiment decomposition on patron reviews, isolating stitch quality, print vibrancy, and sizing feedback.",
+    status: "Active",
+    lastActivity: "1 hour ago",
+    usageMetric: "94 reviews synthesized",
+    tokensToday: "45k tokens",
+    latency: "380ms",
+    iconName: "Star",
+  },
+  {
+    id: "feat_sales_insights",
+    name: "AI Sales Insights",
+    category: "Growth",
+    description:
+      "Discovers hidden patron buying clusters, price elasticity thresholds, and seasonal POD colorway spikes.",
+    status: "Active",
+    lastActivity: "35 mins ago",
+    usageMetric: "Weekly briefing generated",
+    tokensToday: "125k tokens",
+    latency: "1.1s",
+    iconName: "TrendingUp",
+  },
+  {
+    id: "feat_demand_pred",
+    name: "AI Demand Prediction",
+    category: "Operations",
+    description:
+      "Predictive POD blank inventory forecasting across Berlin, London, and Tokyo printing fulfillment nodes.",
+    status: "Ready",
+    lastActivity: "3 hours ago",
+    usageMetric: "98.8% stock availability SLA",
+    tokensToday: "80k tokens",
+    latency: "890ms",
+    iconName: "Cpu",
+  },
+  {
+    id: "feat_mkt_assist",
+    name: "AI Marketing Assistant",
+    category: "Growth",
+    description:
+      "Generates high-aesthetic Instagram carousel scripts, newsletter teasers, and VIP drop preview notifications.",
+    status: "Active",
+    lastActivity: "18 mins ago",
+    usageMetric: "38 campaigns drafted",
+    tokensToday: "190k tokens",
+    latency: "740ms",
+    iconName: "Flame",
+  },
+  {
+    id: "feat_content_gen",
+    name: "AI Content Generator",
+    category: "Editorial",
+    description:
+      "Full-spectrum copy compositor for header marquee banners, sticky promotional drawers, and FAQ knowledge bases.",
+    status: "Draft",
+    lastActivity: "5 hours ago",
+    usageMetric: "12 templates saved",
+    tokensToday: "30k tokens",
+    latency: "610ms",
+    iconName: "Type",
+  },
+];
+
+export const AI_APPROVALS_DATA: AIApprovalItem[] = [
+  {
+    id: "appr_101",
+    title: "Editorial Blog: The Geometry of Negative Space in Modern Streetwear",
+    type: "Blog Draft",
+    targetEntity: "Journal / Essays",
+    summary:
+      "1,450-word cultural essay exploring monochrome Bauhaus architecture and organic heavyweight cotton silhouettes.",
+    generatedContent: {
+      proposed:
+        "Negative space is not the absence of thought; it is the discipline of knowing when to stop. In contemporary garment architecture, the unprinted void carries equal gravity to the graphic imprint...",
+      diffNotes:
+        "Added 3 sub-headings, meta title, and 4 FAQs relating to sustainable DTG waterless printing.",
+    },
+    confidence: 96,
+    model: "Gemini 1.5 Pro (Editorial Tuned)",
+    createdAt: "14 mins ago",
+    status: "Pending",
+    author: "AI Blog Assistant",
+  },
+  {
+    id: "appr_102",
+    title: "Product SEO Metadata: Midnight Lion Heavyweight Hoodie",
+    type: "SEO Metadata",
+    targetEntity: "Product / Catalog #PD-8821",
+    summary:
+      "Updated meta title and structured Schema.org product rating payload for DACH & UK search engines.",
+    generatedContent: {
+      original: "Midnight Lion Hoodie - Buy Online at Studio Noir",
+      proposed:
+        "Midnight Lion Heavyweight 400gsm Hoodie | Organic Cotton Atelier Edition | Studio Noir",
+      diffNotes: "Integrated high-intent keywords (+22% projected organic CTR).",
+    },
+    confidence: 98,
+    model: "Gemini 1.5 Flash (SEO Spec)",
+    createdAt: "28 mins ago",
+    status: "Pending",
+    author: "AI SEO Generator",
+  },
+  {
+    id: "appr_103",
+    title: "Product Description: Zero-Waste Archival Canvas Tote",
+    type: "Product Description",
+    targetEntity: "Product / Catalog #PD-9014",
+    summary:
+      "Luxury craftsmanship narrative highlighting reinforced box-stitch handles and water-based archival pigment inks.",
+    generatedContent: {
+      proposed:
+        "Constructed from 16oz raw unbleached duck canvas, this archival tote is designed for utilitarian longevity. Finished with reinforced cross-box stitching and hand-printed in London on-demand.",
+    },
+    confidence: 94,
+    model: "Gemini 1.5 Pro (Luxury Copy)",
+    createdAt: "1 hour ago",
+    status: "Pending",
+    author: "AI Product Assistant",
+  },
+  {
+    id: "appr_104",
+    title: "VIP Dispatch: Capsule III Autumn Solstice Campaign",
+    type: "Marketing Caption",
+    targetEntity: "Newsletter / Dispatch",
+    summary: "Exclusive pre-launch invitation text crafted for high-LTV collector patrons.",
+    generatedContent: {
+      proposed:
+        "Before the gallery opens to the public, we invite our founding patrons to inspect Capsule III: Architectural Monoliths. Limited to made-to-order archival runs.",
+    },
+    confidence: 92,
+    model: "Gemini 1.5 Pro",
+    createdAt: "2 hours ago",
+    status: "Pending",
+    author: "AI Marketing Assistant",
+  },
+  {
+    id: "appr_105",
+    title: "Customer Support Reply: Order #AT-9821 POD Re-route",
+    type: "Customer Reply",
+    targetEntity: "Patron: Sophia Laurent (Paris, FR)",
+    summary:
+      "Detailed response explaining Berlin hub carrier dispatch and tracking link verification.",
+    generatedContent: {
+      proposed:
+        "Bonjour Sophia, thank you for reaching out to Studio Noir Atelier. Your Midnight Lion Hoodie has completed print inspection in our Berlin studio and is en route via DHL Express (Tracking: #DE-99482104). Expected delivery is Thursday.",
+    },
+    confidence: 99,
+    model: "Gemini 1.5 Flash",
+    createdAt: "3 hours ago",
+    status: "Pending",
+    author: "AI Customer Support",
+  },
+  {
+    id: "appr_106",
+    title: "German Translation (DE): Zero-Waste Production Guarantee",
+    type: "Translation",
+    targetEntity: "Page / Trust Center",
+    summary:
+      "Localized legal and sustainability pledge for DACH patrons with precision terminology.",
+    generatedContent: {
+      proposed:
+        "Unsere Philosophie basiert auf einer reinen On-Demand-Produktion. Jedes Kleidungsstück wird erst nach Ihrer Bestellung in Berlin oder London bedruckt – ohne Überproduktion, ohne Lagerabfall.",
+    },
+    confidence: 97,
+    model: "Gemini 1.5 Pro (Multilingual)",
+    createdAt: "4 hours ago",
+    status: "Pending",
+    author: "AI Translation Engine",
+  },
+];
+
+export const AUTOMATION_WORKFLOWS_DATA: AutomationWorkflow[] = [
+  {
+    id: "wf_order_pod",
+    name: "Order Paid → POD Fulfillment Pipeline",
+    description:
+      "Instantly validates payment, performs high-res artwork pre-flight rasterization, and routes to nearest regional print node.",
+    category: "Fulfillment",
+    trigger: "Order.Payment_Captured",
+    status: "Active",
+    lastRun: "4 mins ago",
+    successRate: 99.8,
+    totalRuns: 4280,
+    avgDuration: "840ms",
+    nodes: [
+      {
+        id: "n1",
+        title: "ORDER PAID",
+        type: "trigger",
+        status: "active",
+        description: "Webhook event from Stripe / Apple Pay verified.",
+        latency: "45ms",
+        icon: "CreditCard",
+      },
+      {
+        id: "n2",
+        title: "VALIDATE ORDER",
+        type: "action",
+        status: "active",
+        description: "Verify artwork 300 DPI vector DPI match & customer address.",
+        latency: "120ms",
+        icon: "ShieldCheck",
+      },
+      {
+        id: "n3",
+        title: "GEO-ROUTING POD",
+        type: "pod",
+        status: "active",
+        description: "Route to Berlin Hub (EU) or London Studio (UK/US).",
+        latency: "210ms",
+        icon: "Cpu",
+      },
+      {
+        id: "n4",
+        title: "UPDATE INVENTORY",
+        type: "action",
+        status: "active",
+        description: "Deduct blank stock reserve in warehouse node.",
+        latency: "80ms",
+        icon: "Layers",
+      },
+      {
+        id: "n5",
+        title: "DISPATCH EMAIL",
+        type: "notification",
+        status: "active",
+        description: "Send order receipt with high-res artwork preview.",
+        latency: "190ms",
+        icon: "Mail",
+      },
+      {
+        id: "n6",
+        title: "SEND PATRON SMS",
+        type: "notification",
+        status: "active",
+        description: "Optional instant confirmation SMS to patron.",
+        latency: "110ms",
+        icon: "MessageSquare",
+      },
+    ],
+  },
+  {
+    id: "wf_shipping_notif",
+    name: "Carrier Tracking & Shipping Dispatch",
+    description:
+      "Listens for carrier tracking generation (DHL/Royal Mail/FedEx) and synchronizes tracking URL to patron dashboard.",
+    category: "Fulfillment",
+    trigger: "POD.Fulfillment_Shipped",
+    status: "Active",
+    lastRun: "18 mins ago",
+    successRate: 99.9,
+    totalRuns: 3120,
+    avgDuration: "320ms",
+    nodes: [
+      {
+        id: "n1",
+        title: "TRACKING GENERATED",
+        type: "trigger",
+        status: "active",
+        description: "Carrier barcode scan verified.",
+        icon: "Truck",
+      },
+      {
+        id: "n2",
+        title: "GENERATE TIMELINE",
+        type: "action",
+        status: "active",
+        description: "Build interactive live delivery tracker.",
+        icon: "MapPin",
+      },
+      {
+        id: "n3",
+        title: "SEND DISPATCH EMAIL",
+        type: "notification",
+        status: "active",
+        description: "Patron receives tracking link with GPS estimates.",
+        icon: "Send",
+      },
+    ],
+  },
+  {
+    id: "wf_review_request",
+    name: "Post-Delivery Review & Atelier Karma",
+    description:
+      "Triggers personalized satisfaction review request 3 days following verified doorstep delivery.",
+    category: "Marketing",
+    trigger: "Carrier.Delivered_Plus_3_Days",
+    status: "Active",
+    lastRun: "45 mins ago",
+    successRate: 99.2,
+    totalRuns: 1890,
+    avgDuration: "410ms",
+    nodes: [
+      {
+        id: "n1",
+        title: "DELIVERY CONFIRMED +3D",
+        type: "trigger",
+        status: "active",
+        description: "Carrier webhook marks package as Delivered.",
+        icon: "CheckCircle2",
+      },
+      {
+        id: "n2",
+        title: "SYNTHESIZE EMAIL",
+        type: "action",
+        status: "active",
+        description: "AI personalizes copy with ordered product name.",
+        icon: "Wand2",
+      },
+      {
+        id: "n3",
+        title: "DISPATCH REVIEW INVITE",
+        type: "notification",
+        status: "active",
+        description: "Invite patron to upload photo review for 10% credit.",
+        icon: "Star",
+      },
+    ],
+  },
+  {
+    id: "wf_abandoned_cart",
+    name: "Abandoned Bag Recovery Sequence",
+    description:
+      "Multi-tiered recovery sequence delivering bespoke high-aesthetic cart reminder at 1hr and 24hr intervals.",
+    category: "Marketing",
+    trigger: "Cart.Abandoned_60_Min",
+    status: "Active",
+    lastRun: "12 mins ago",
+    successRate: 98.4,
+    totalRuns: 2410,
+    avgDuration: "520ms",
+    nodes: [
+      {
+        id: "n1",
+        title: "CART IDLE 60 MIN",
+        type: "trigger",
+        status: "active",
+        description: "Uncompleted checkout with email captured.",
+        icon: "ShoppingBag",
+      },
+      {
+        id: "n2",
+        title: "CHECK INVENTORY",
+        type: "action",
+        status: "active",
+        description: "Ensure selected blank & design are in stock.",
+        icon: "CheckSquare",
+      },
+      {
+        id: "n3",
+        title: "SEND RECOVERY DISPATCH",
+        type: "notification",
+        status: "active",
+        description: "Send single-click restore bag link.",
+        icon: "Mail",
+      },
+    ],
+  },
+  {
+    id: "wf_low_stock_fallback",
+    name: "POD Out-of-Stock Fallback Routing",
+    description:
+      "Automatically re-routes pending orders to secondary regional studio if local blank inventory is exhausted.",
+    category: "Operations",
+    trigger: "POD.Inventory_Stockout_Alert",
+    status: "Active",
+    lastRun: "2 days ago",
+    successRate: 100,
+    totalRuns: 142,
+    avgDuration: "1.1s",
+    nodes: [
+      {
+        id: "n1",
+        title: "STOCKOUT DETECTED",
+        type: "trigger",
+        status: "active",
+        description: "Primary node reports zero blank stock.",
+        icon: "AlertTriangle",
+      },
+      {
+        id: "n2",
+        title: "QUERY FALLBACK HUB",
+        type: "action",
+        status: "active",
+        description: "Find closest secondary print facility.",
+        icon: "Cpu",
+      },
+      {
+        id: "n3",
+        title: "RE-ROUTE ORDER",
+        type: "pod",
+        status: "active",
+        description: "Re-assign print job with expedited shipping upgrade.",
+        icon: "Shuffle",
+      },
+    ],
+  },
+];
+
+export const AUTOMATION_LOGS_DATA: AutomationLog[] = [
+  {
+    id: "log_99214",
+    timestamp: "2026-08-29 11:38:12",
+    workflowName: "Order Paid → POD Fulfillment Pipeline",
+    workflowId: "wf_order_pod",
+    trigger: "Order.Payment_Captured (#AT-9844)",
+    status: "Success",
+    duration: "640ms",
+    region: "Berlin Hub (EU)",
+    payloadSummary:
+      "Order #AT-9844 validated. 1x Midnight Lion Hoodie routed to Berlin DTG line. DPI: 300.",
+    steps: [
+      { name: "Validate Payment & Token", status: "success", duration: "80ms" },
+      { name: "Vector Pre-flight Check", status: "success", duration: "210ms" },
+      { name: "Gelato API Order Created", status: "success", duration: "240ms" },
+      { name: "Patron Email Confirmation Dispatched", status: "success", duration: "110ms" },
+    ],
+  },
+  {
+    id: "log_99213",
+    timestamp: "2026-08-29 11:34:40",
+    workflowName: "Carrier Tracking & Shipping Dispatch",
+    workflowId: "wf_shipping_notif",
+    trigger: "POD.Fulfillment_Shipped (#AT-9820)",
+    status: "Success",
+    duration: "280ms",
+    region: "London Studio (UK)",
+    payloadSummary: "Royal Mail 24 Tracked generated (#RM-8829104). Email dispatched to patron.",
+    steps: [
+      { name: "Parse Carrier Barcode", status: "success", duration: "40ms" },
+      { name: "Update Storefront Database", status: "success", duration: "120ms" },
+      { name: "Dispatch Dispatch Email", status: "success", duration: "120ms" },
+    ],
+  },
+  {
+    id: "log_99212",
+    timestamp: "2026-08-29 11:28:02",
+    workflowName: "AI Review Analysis & Sentiment Scoring",
+    workflowId: "wf_review_analysis",
+    trigger: "Review.Submitted (#REV-410)",
+    status: "Success",
+    duration: "410ms",
+    region: "Global Cloud Edge",
+    payloadSummary:
+      "5★ Review from Lucas M. analyzed. Sentiment: 99.4% Positive. Tag: Heavyweight Softness.",
+    steps: [
+      { name: "Sentiment Extraction", status: "success", duration: "220ms" },
+      { name: "Tag Attribution", status: "success", duration: "110ms" },
+      { name: "Storefront Review Verified", status: "success", duration: "80ms" },
+    ],
+  },
+  {
+    id: "log_99211",
+    timestamp: "2026-08-29 11:19:15",
+    workflowName: "Abandoned Bag Recovery Sequence",
+    workflowId: "wf_abandoned_cart",
+    trigger: "Cart.Abandoned_60_Min (user_901)",
+    status: "Success",
+    duration: "340ms",
+    region: "Global Cloud Edge",
+    payloadSummary: "Cart recovery email sent with 1-click checkout URL for 2 items ($148.00).",
+    steps: [
+      { name: "Check Blank Availability", status: "success", duration: "90ms" },
+      { name: "Render Personalized HTML", status: "success", duration: "150ms" },
+      { name: "Dispatch Email", status: "success", duration: "100ms" },
+    ],
+  },
+  {
+    id: "log_99210",
+    timestamp: "2026-08-29 11:05:44",
+    workflowName: "AI Translation Sync (JA Locale)",
+    workflowId: "wf_trans_sync",
+    trigger: "Product.Published (#PD-9104)",
+    status: "Needs Approval",
+    duration: "1.2s",
+    region: "Tokyo Cloud Node",
+    payloadSummary:
+      "Japanese translation generated for 'Capsule III Lookbook'. Waiting for human sign-off in Approval Center.",
+    steps: [
+      { name: "Extract English Copy", status: "success", duration: "140ms" },
+      { name: "Gemini Neural Translation", status: "success", duration: "920ms" },
+      { name: "Route to Approval Queue", status: "success", duration: "140ms" },
+    ],
+  },
+  {
+    id: "log_99209",
+    timestamp: "2026-08-29 10:48:30",
+    workflowName: "POD Out-of-Stock Fallback Routing",
+    workflowId: "wf_low_stock_fallback",
+    trigger: "POD.Inventory_Stockout_Alert",
+    status: "Failed",
+    duration: "2.1s",
+    region: "Berlin Hub (EU)",
+    errorMessage:
+      "Primary node connection timeout after 2000ms. Fallback re-route initiated to London.",
+    payloadSummary:
+      "Stockout on 400gsm Moss Blank in Berlin. Automatic failover triggered to London studio.",
+    steps: [
+      { name: "Ping Primary Node", status: "failed", duration: "2000ms" },
+      { name: "Trigger Auto Failover", status: "success", duration: "100ms" },
+    ],
+  },
+];
+
+export const AI_INSIGHTS_DATA: AIInsight[] = [
+  {
+    id: "ins_1",
+    headline: "Minimal Collection DACH Surge",
+    narrative:
+      "Your Minimalist Bauhaus collection is observing a +42% conversion spike from DACH patrons (Germany, Austria, Switzerland), driven by organic search queries for 'Heavyweight Boxy Hoodie'.",
+    dataSource: "Storefront Telemetry + Google Search Console",
+    confidence: 97,
+    impact: "High",
+    category: "Conversion",
+    recommendedAction:
+      "Feature Minimal Collection in European Hero Marquee & ensure Berlin POD blank stock buffer.",
+    actionType: "quick_apply",
+    timestamp: "Updated 10 mins ago",
+  },
+  {
+    id: "ins_2",
+    headline: "High Basket Affinity: Hoodies + Canvas Totes",
+    narrative:
+      "Patrons adding any Heavyweight Hoodie to their bag have a 36.8% higher checkout completion rate when recommended the matching Archival Duck Canvas Tote at checkout.",
+    dataSource: "Checkout Funnel & Cart Affinity Matrix",
+    confidence: 95,
+    impact: "Crucial",
+    category: "Merchandising",
+    recommendedAction:
+      "Activate 1-click 'Atelier Bundle' drawer offering $15 complimentary bag upgrade.",
+    actionType: "create_campaign",
+    timestamp: "Updated 1 hour ago",
+  },
+  {
+    id: "ins_3",
+    headline: "Unprinted Darkroom Artwork Opportunity",
+    narrative:
+      "Three archive graphic designs ('Cyber Serpent', 'Brutalist Monolith', 'Neo Kyoto') are receiving top bookmark saves but lack direct link cards on the active collection landing page.",
+    dataSource: "Patron Wishlists & Saved Artwork Matrix",
+    confidence: 91,
+    impact: "Medium",
+    category: "Merchandising",
+    recommendedAction: "Auto-generate curated 'Archival Spotlight' editorial grid on homepage.",
+    actionType: "view_report",
+    timestamp: "Updated 3 hours ago",
+  },
+  {
+    id: "ins_4",
+    headline: "London Atelier Shipping SLA Optimization",
+    narrative:
+      "Orders routed to London Studio are dispatched on average in 18.4 hours, well beating the 48-hour patron SLA promise.",
+    dataSource: "Fulfillment Logs & Royal Mail Webhooks",
+    confidence: 99,
+    impact: "Medium",
+    category: "Logistics",
+    recommendedAction:
+      "Update UK product page badges to advertise 'Next-Day Atelier Craft & Dispatch'.",
+    actionType: "quick_apply",
+    timestamp: "Updated 5 hours ago",
+  },
+];
+
+export const CUSTOMER_SUPPORT_DATA: CustomerInquiry[] = [
+  {
+    id: "inq_1",
+    customerName: "Julian Vance",
+    customerEmail: "julian.vance@studio-noir.art",
+    tier: "VIP Patron",
+    orderNumber: "#AT-9840",
+    lastMessageTime: "5 mins ago",
+    status: "Awaiting Human",
+    conversation: [
+      {
+        sender: "customer",
+        message:
+          "Hello Atelier Team. I ordered the Midnight Lion Hoodie yesterday and wanted to confirm if the 400gsm cotton is pre-washed or if I should size up for a relaxed fit?",
+        timestamp: "11:32 AM",
+      },
+    ],
+    aiSuggestedReply:
+      "Good morning Julian, thank you for being a VIP patron of Studio Noir. All our 400gsm French Terry heavyweight hoodies undergo pre-shrunk enzyme washing prior to printing, ensuring zero dimensional shrinkage. We recommend staying true to your standard size for our signature architectural drape.",
+    aiConfidence: 98,
+    aiSuggestedAction: "Include Size Guide & Care PDF link in response",
+  },
+  {
+    id: "inq_2",
+    customerName: "Amelie Dubois",
+    customerEmail: "amelie.d@luxury-paris.fr",
+    tier: "Collector",
+    orderNumber: "#AT-9812",
+    lastMessageTime: "24 mins ago",
+    status: "Awaiting Human",
+    conversation: [
+      {
+        sender: "customer",
+        message:
+          "Hi! My tracking number #DE-99482104 hasn't updated in 24 hours. Could you check if it has departed the Berlin studio?",
+        timestamp: "11:14 AM",
+      },
+    ],
+    aiSuggestedReply:
+      "Bonjour Amelie, thank you for reaching out. We have checked directly with our Berlin print facility: your order #AT-9812 completed its archival print cure and was handed to DHL Express this morning. The first carrier transit scan typically registers within 12–18 hours. It remains on schedule for arrival this Thursday.",
+    aiConfidence: 96,
+    aiSuggestedAction: "Check DHL live API webhook telemetry",
+  },
+  {
+    id: "inq_3",
+    customerName: "Kenji Takahashi",
+    customerEmail: "kenji.t@tokyo-design.jp",
+    tier: "First-Time",
+    lastMessageTime: "1 hour ago",
+    status: "Drafted",
+    conversation: [
+      {
+        sender: "customer",
+        message:
+          "Do you ship your limited print art editions directly to Tokyo, and are international duties calculated at checkout?",
+        timestamp: "10:35 AM",
+      },
+    ],
+    aiSuggestedReply:
+      "Konnichiwa Kenji, welcome to Studio Noir. Yes, we ship worldwide to Japan via FedEx International Priority. All customs duties and consumption taxes are calculated and collected upfront at checkout (DDP - Delivered Duty Paid), so there are no additional carrier fees upon delivery in Tokyo.",
+    aiConfidence: 99,
+    aiSuggestedAction: "Highlight Japanese language toggle link",
+  },
+];
+
+export const SEO_CHECK_ITEMS: SEOCheckItem[] = [
+  {
+    id: "seo_1",
+    name: "Title Tag & Click-Through Optimization",
+    status: "pass",
+    score: 96,
+    detail: "Primary title contains 58 characters with brand prefix and target intent keywords.",
+    recommendation: "Title structure is optimal. No action needed.",
+  },
+  {
+    id: "seo_2",
+    name: "Meta Description Compelling Length",
+    status: "warning",
+    score: 78,
+    detail:
+      "Current meta description is 124 characters (recommended 150-160 characters for maximum snippet real estate).",
+    recommendation: "Inject call-to-action mentioning on-demand European organic cotton craft.",
+  },
+  {
+    id: "seo_3",
+    name: "Target Keyword Density & Coverage",
+    status: "pass",
+    score: 94,
+    detail:
+      "'Heavyweight hoodie', 'organic streetwear', 'archival print' found across H1, H2, and body.",
+    recommendation: "Keyword distribution is natural with 0% risk of over-optimization penalties.",
+  },
+  {
+    id: "seo_4",
+    name: "Structured Data / JSON-LD Schema",
+    status: "pass",
+    score: 100,
+    detail: "Valid Schema.org Product, BreadcrumbList, and AggregateRating markup embedded.",
+    recommendation: "Rich snippets verified in Google Search Console crawler sandbox.",
+  },
+  {
+    id: "seo_5",
+    name: "Internal Deep Linking",
+    status: "warning",
+    score: 82,
+    detail: "Only 2 cross-links to parent 'Heavyweight Canvas Collection' detected in body text.",
+    recommendation: "Add 1 link pointing to matching Archival Tote Bag product page.",
+  },
+  {
+    id: "seo_6",
+    name: "Content Readability & Typography Scale",
+    status: "pass",
+    score: 95,
+    detail:
+      "Flesch-Kincaid grade level 8.4; clear typographic hierarchy with optimal sentence lengths.",
+    recommendation: "Readability passes luxury editorial benchmarks.",
+  },
+];

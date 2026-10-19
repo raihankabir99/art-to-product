@@ -19,7 +19,13 @@ import type { ProductType } from "@/lib/catalog";
 
 /* ---------------- Price + rating ---------------- */
 
-export function ProductPrice({ value, compareAt }: { value: number; compareAt?: number | undefined }) {
+export function ProductPrice({
+  value,
+  compareAt,
+}: {
+  value: number;
+  compareAt?: number | undefined;
+}) {
   const { format } = useStore();
   return (
     <p className="text-price flex flex-wrap items-baseline gap-3">
@@ -49,7 +55,10 @@ export function ProductRating({
         {[1, 2, 3, 4, 5].map((s) => (
           <Star
             key={s}
-            className={cn("size-4", s <= Math.round(rating) ? "text-gold" : "text-muted-foreground")}
+            className={cn(
+              "size-4",
+              s <= Math.round(rating) ? "text-gold" : "text-muted-foreground",
+            )}
             fill={s <= Math.round(rating) ? "currentColor" : "none"}
           />
         ))}
@@ -59,7 +68,11 @@ export function ProductRating({
         <span className="sr-only"> out of 5</span>
       </span>
       {onJump ? (
-        <button type="button" onClick={onJump} className="text-meta underline hover:text-foreground">
+        <button
+          type="button"
+          onClick={onJump}
+          className="text-meta underline hover:text-foreground"
+        >
           {reviews} demo reviews
         </button>
       ) : (
@@ -157,7 +170,11 @@ export function SizeSelector({
         value={value}
         action={
           onGuide ? (
-            <button type="button" onClick={onGuide} className="text-meta underline hover:text-foreground">
+            <button
+              type="button"
+              onClick={onGuide}
+              className="text-meta underline hover:text-foreground"
+            >
               Size guide
             </button>
           ) : undefined
@@ -177,8 +194,11 @@ export function SizeSelector({
               aria-pressed={active}
               className={cn(
                 "text-label relative min-h-11 min-w-[3.25rem] border px-3 transition-colors",
-                active ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground",
-                out && "cursor-not-allowed text-muted-foreground line-through opacity-50 hover:border-border",
+                active
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border hover:border-foreground",
+                out &&
+                  "cursor-not-allowed text-muted-foreground line-through opacity-50 hover:border-border",
               )}
             >
               {s}
@@ -310,7 +330,10 @@ export function PosterSizeSelector({
             >
               <span
                 aria-hidden="true"
-                className={cn("block border", active ? "border-gold bg-gold/10" : "border-border-strong")}
+                className={cn(
+                  "block border",
+                  active ? "border-gold bg-gold/10" : "border-border-strong",
+                )}
                 style={{ width: `${f.scale * 2.6}rem`, height: `${f.scale * 3.7}rem` }}
               />
               <span className="text-label">{f.label}</span>
@@ -384,7 +407,8 @@ export function ShippingEstimator() {
       <p className="text-body-sm mt-4 flex items-start gap-3 text-muted-foreground">
         <Truck className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
         <span>
-          Estimated delivery to {country.name}: <span className="text-foreground">{country.estimate}</span>
+          Estimated delivery to {country.name}:{" "}
+          <span className="text-foreground">{country.estimate}</span>
           <br />
           {country.note}. Demo estimate — final times are confirmed at checkout.
         </span>
@@ -397,9 +421,21 @@ export function ShippingEstimator() {
 
 export function ProductAssurances() {
   const items = [
-    { icon: Truck, title: "Shipping", body: "Made on demand, then dispatched. Tracked worldwide delivery." },
-    { icon: RefreshCw, title: "Returns", body: "30-day returns on unworn items. Placeholder policy copy." },
-    { icon: ShieldCheck, title: "Secure checkout", body: "Encrypted payment placeholder for this prototype." },
+    {
+      icon: Truck,
+      title: "Shipping",
+      body: "Made on demand, then dispatched. Tracked worldwide delivery.",
+    },
+    {
+      icon: RefreshCw,
+      title: "Returns",
+      body: "30-day returns on unworn items. Placeholder policy copy.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Secure checkout",
+      body: "Encrypted payment placeholder for this prototype.",
+    },
   ];
   return (
     <ul className="grid gap-3 sm:grid-cols-3">
@@ -452,8 +488,12 @@ export function ProductAccordion({ type, story }: { type: ProductType; story: st
     <Accordion type="single" collapsible className="border-t border-border">
       {sections.map((s) => (
         <AccordionItem key={s.id} value={s.id} className="border-b border-border">
-          <AccordionTrigger className="text-label py-5 hover:no-underline">{s.title}</AccordionTrigger>
-          <AccordionContent className="text-body-sm pb-6 text-muted-foreground">{s.body}</AccordionContent>
+          <AccordionTrigger className="text-label py-5 hover:no-underline">
+            {s.title}
+          </AccordionTrigger>
+          <AccordionContent className="text-body-sm pb-6 text-muted-foreground">
+            {s.body}
+          </AccordionContent>
         </AccordionItem>
       ))}
     </Accordion>

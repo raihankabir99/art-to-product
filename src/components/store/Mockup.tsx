@@ -13,15 +13,13 @@ import { productType, type Design, type ProductTypeId } from "@/lib/catalog";
 export type MockupView = "front" | "back" | "detail" | "lifestyle";
 
 const SILHOUETTES: Record<ProductTypeId, string> = {
-  tshirt:
-    "M30 16 L42 10 h16 l12 6 12 8 -8 14 -8 -5 v47 H34 V39 l-8 5 -8 -14z",
-  hoodie:
-    "M28 18 L42 11 q8 12 16 0 l14 7 12 9 -8 15 -8 -5 v45 H32 V45 l-8 5 -8 -15z",
-  sweatshirt:
-    "M30 17 L43 11 h14 l13 6 11 9 -8 14 -7 -4 v46 H33 V46 l-7 4 -8 -14z",
+  tshirt: "M30 16 L42 10 h16 l12 6 12 8 -8 14 -8 -5 v47 H34 V39 l-8 5 -8 -14z",
+  hoodie: "M28 18 L42 11 q8 12 16 0 l14 7 12 9 -8 15 -8 -5 v45 H32 V45 l-8 5 -8 -15z",
+  sweatshirt: "M30 17 L43 11 h14 l13 6 11 9 -8 14 -7 -4 v46 H33 V46 l-7 4 -8 -14z",
   tote: "M32 26 h36 v62 H32z M42 26 q8 -18 16 0",
   mug: "M28 34 h40 v40 a8 8 0 0 1 -8 8 H36 a8 8 0 0 1 -8 -8z M68 42 h8 a10 10 0 0 1 0 24 h-8",
-  phonecase: "M34 8 h32 a6 6 0 0 1 6 6 v72 a6 6 0 0 1 -6 6 H34 a6 6 0 0 1 -6 -6 V14 a6 6 0 0 1 6 -6z",
+  phonecase:
+    "M34 8 h32 a6 6 0 0 1 6 6 v72 a6 6 0 0 1 -6 6 H34 a6 6 0 0 1 -6 -6 V14 a6 6 0 0 1 6 -6z",
   cap: "M22 62 q0 -30 28 -30 t28 30 z M78 62 h12 q0 8 -12 8z",
   poster: "M24 8 h52 v84 H24z",
   sticker: "M20 20 h60 v60 H20z",
@@ -58,9 +56,7 @@ export function Mockup({
   const color = colorValue ?? type.colors[0]?.value ?? "#111111";
   const blankTone = tone ?? type.colors.find((c) => c.value === color)?.tone ?? "dark";
   const inkFilter =
-    blankTone === "dark"
-      ? "brightness(0) invert(1) opacity(0.92)"
-      : "brightness(0) opacity(0.86)";
+    blankTone === "dark" ? "brightness(0) invert(1) opacity(0.92)" : "brightness(0) opacity(0.86)";
 
   const scale =
     view === "back"

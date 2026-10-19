@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Eye, Minus, Plus, Star } from "lucide-react";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -68,7 +69,12 @@ export const emptyFilters: ShopFilters = {
 };
 
 export const filterCount = (f: ShopFilters) =>
-  f.types.length + f.sizes.length + f.colors.length + f.bands.length + f.edits.length + f.styles.length;
+  f.types.length +
+  f.sizes.length +
+  f.colors.length +
+  f.bands.length +
+  f.edits.length +
+  f.styles.length;
 
 export interface Row {
   design: Design;
@@ -107,7 +113,10 @@ export function buildRows(filters: ShopFilters, sort: Sort, allowed?: ProductTyp
   if (sort === "Price: High to Low") sorted.sort((a, b) => price(b) - price(a));
   if (sort === "Best Selling") sorted.sort((a, b) => b.design.reviews - a.design.reviews);
   if (sort === "Newest")
-    sorted.sort((a, b) => Number(b.design.year) - Number(a.design.year) || a.design.name.localeCompare(b.design.name));
+    sorted.sort(
+      (a, b) =>
+        Number(b.design.year) - Number(a.design.year) || a.design.name.localeCompare(b.design.name),
+    );
   return sorted;
 }
 
@@ -205,7 +214,9 @@ function ToggleList({
               key={o.value}
               className={cn(
                 "text-label inline-flex min-h-11 cursor-pointer items-center gap-2 border px-3 transition-colors",
-                on ? "border-foreground bg-foreground text-background" : "border-border hover:border-foreground",
+                on
+                  ? "border-foreground bg-foreground text-background"
+                  : "border-border hover:border-foreground",
               )}
             >
               <input
@@ -332,13 +343,7 @@ export function FilterDrawer({
 
 /* ---------------- Quick view ---------------- */
 
-export function QuickViewModal({
-  row,
-  onClose,
-}: {
-  row: Row | null;
-  onClose: () => void;
-}) {
+export function QuickViewModal({ row, onClose }: { row: Row | null; onClose: () => void }) {
   const { addToCart } = useStore();
   const type = row ? productType(row.productId) : null;
   const [color, setColor] = useState(0);
@@ -348,7 +353,11 @@ export function QuickViewModal({
   useEffect(() => {
     setColor(0);
     setQty(1);
-    setSize(row ? productType(row.productId).sizes?.[2] ?? productType(row.productId).sizes?.[0] : undefined);
+    setSize(
+      row
+        ? (productType(row.productId).sizes?.[2] ?? productType(row.productId).sizes?.[0])
+        : undefined,
+    );
   }, [row]);
 
   if (!row || !type) return null;
@@ -374,7 +383,11 @@ export function QuickViewModal({
           <div className="mt-3 flex items-center gap-2">
             <span className="flex items-center gap-0.5 text-gold" aria-hidden="true">
               {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="size-3.5" fill={i < Math.round(row.design.rating) ? "currentColor" : "none"} />
+                <Star
+                  key={i}
+                  className="size-3.5"
+                  fill={i < Math.round(row.design.rating) ? "currentColor" : "none"}
+                />
               ))}
             </span>
             <span className="text-meta">
@@ -456,7 +469,9 @@ export function QuickViewModal({
 
           {stock !== "in" ? (
             <p className="text-meta mt-5">
-              {stock === "out" ? "Currently unavailable in this combination." : "Low stock — made to order."}
+              {stock === "out"
+                ? "Currently unavailable in this combination."
+                : "Low stock — made to order."}
             </p>
           ) : null}
 
@@ -475,6 +490,7 @@ export function QuickViewModal({
                   price: type.price,
                   qty,
                 });
+                toast.success(`Added ${qty} × ${row.design.name} ${type.name} to bag`);
                 onClose();
               }}
             >
@@ -498,13 +514,7 @@ export function QuickViewModal({
 
 /* ---------------- Product card ---------------- */
 
-export function ShopProductCard({
-  row,
-  onQuickView,
-}: {
-  row: Row;
-  onQuickView: (r: Row) => void;
-}) {
+export function ShopProductCard({ row, onQuickView }: { row: Row; onQuickView: (r: Row) => void }) {
   const { design, productId } = row;
   const type = productType(productId);
   const [hover, setHover] = useState(false);
@@ -631,7 +641,11 @@ export function ProductGrid({
   return (
     <div className="grid grid-cols-2 gap-x-5 gap-y-12 md:grid-cols-3 md:gap-x-6 xl:grid-cols-4">
       {rows.map((r) => (
-        <ShopProductCard key={`${r.design.slug}-${r.productId}`} row={r} onQuickView={onQuickView} />
+        <ShopProductCard
+          key={`${r.design.slug}-${r.productId}`}
+          row={r}
+          onQuickView={onQuickView}
+        />
       ))}
       {loading ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={`sk-${i}`} />) : null}
     </div>

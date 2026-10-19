@@ -16,7 +16,6 @@ import {
   productType,
 } from "@/lib/catalog";
 
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -86,7 +85,6 @@ function Home() {
             Delivery to {region.country} in {region.delivery} · {region.taxNote}
           </p>
         </div>
-
       </section>
 
       {/* MARQUEE */}
@@ -181,7 +179,6 @@ function Home() {
         </div>
       </section>
 
-
       {/* EDITORIAL SPLIT */}
       <section className="editorial section">
         <div className="container-page grid items-center gap-12 lg:grid-cols-2">
@@ -190,9 +187,7 @@ function Home() {
           </div>
           <div>
             <p className="text-label text-gold">Studio note</p>
-            <h2 className="text-h1 mt-5 max-w-xl">
-              Nothing exists until you ask for it
-            </h2>
+            <h2 className="text-h1 mt-5 max-w-xl">Nothing exists until you ask for it</h2>
             <p className="text-body-lg mt-6 max-w-lg">
               We hold no stock and run no factory. Each piece is produced by a vetted print partner
               close to you — in the Netherlands, the UK, the United States or the Gulf — then sent
@@ -304,10 +299,26 @@ function Home() {
           <SectionHeading eyebrow="Community" title="Loved by the community" />
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {[
-              ["Elise M.", "France", "Beautiful print and the design looks exactly like the preview."],
-              ["Jonas B.", "Germany", "Heavy cotton, clean edges. It feels like a studio piece, not a print shop tee."],
-              ["Sara A.", "Saudi Arabia", "Arrived quickly and the packaging was quiet and considered."],
-              ["Tom H.", "United Kingdom", "I bought the same design on a tote and a poster. Both match perfectly."],
+              [
+                "Elise M.",
+                "France",
+                "Beautiful print and the design looks exactly like the preview.",
+              ],
+              [
+                "Jonas B.",
+                "Germany",
+                "Heavy cotton, clean edges. It feels like a studio piece, not a print shop tee.",
+              ],
+              [
+                "Sara A.",
+                "Saudi Arabia",
+                "Arrived quickly and the packaging was quiet and considered.",
+              ],
+              [
+                "Tom H.",
+                "United Kingdom",
+                "I bought the same design on a tote and a poster. Both match perfectly.",
+              ],
             ].map(([name, place, quote]) => (
               <figure key={name} className="border border-border p-6">
                 <p className="text-gold" aria-label="Rated 5 out of 5">
@@ -373,7 +384,6 @@ function Home() {
           />
         </div>
       </section>
-
     </>
   );
 }

@@ -94,7 +94,10 @@ export function CookieConsent() {
           {GROUPS.map((g) => {
             const checked = g.locked || prefs[g.id as "analytics" | "marketing"];
             return (
-              <li key={g.id} className="flex items-start justify-between gap-6 border border-border p-5">
+              <li
+                key={g.id}
+                className="flex items-start justify-between gap-6 border border-border p-5"
+              >
                 <div className="min-w-0">
                   <p className="text-h4">{g.name}</p>
                   <p className="text-body-sm mt-2 text-muted-foreground">{g.body}</p>
@@ -107,9 +110,7 @@ export function CookieConsent() {
                     checked={checked}
                     disabled={g.locked}
                     aria-label={`${g.name} cookies`}
-                    onChange={(e) =>
-                      setPrefs((p) => ({ ...p, [g.id]: e.target.checked }))
-                    }
+                    onChange={(e) => setPrefs((p) => ({ ...p, [g.id]: e.target.checked }))}
                   />
                 </label>
               </li>
